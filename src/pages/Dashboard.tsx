@@ -1,12 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     BookOpen,
     Calendar,
-    Clock,
     Users,
     Compass,
-    ChevronRight,
     ArrowRight,
     Play,
     User,
@@ -15,32 +14,39 @@ import {
 import Card from '../components/common/Card';
 import ProgressCircle from '../components/common/ProgressCircle';
 import BottomNavbar from '../components/common/BottomNavbar';
+import {
+    userProfile,
+    tahfeezProgress as progressData,
+    getTodaySchedule,
+    getUnreadNotificationCount
+} from '../data/studentData';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
+    const navigate = useNavigate();
     const { t } = useTranslation();
 
-    // Mock data
+    // Get data from mock data
     const userData = {
-        name: 'Ibrahim Yusuf',
+        name: userProfile.name,
         hijriDate: '12 Rajab 1446 AH',
-        gregorianDate: '23 Jan 2025',
+        gregorianDate: '26 Jan 2026',
     };
 
     const tahfeezProgress = {
-        percentage: 65,
-        currentJuz: 3,
-        currentSurah: 'Surah Al-Baqarah',
-        ayahRange: 'Ayah 250 - 255',
+        percentage: Math.round((progressData.currentJuz / progressData.totalJuz) * 100),
+        currentJuz: progressData.currentJuz,
+        currentSurah: 'Surah Yusuf',
+        ayahRange: 'Ayah 1 - 20',
         lastRecited: 'Today, 8:30 AM',
         status: 'on-track' as const,
     };
 
     const quickActions = [
-        { id: 'practice', icon: BookOpen, label: t('dashboard.logPractice'), color: '#3B82F6' },
-        { id: 'timetable', icon: Calendar, label: t('dashboard.timetable'), color: '#10B981' },
-        { id: 'class', icon: Users, label: t('dashboard.joinClass'), color: '#F59E0B' },
-        { id: 'qibla', icon: Compass, label: t('dashboard.qibla'), color: '#EF4444' },
+        { id: 'practice', icon: BookOpen, label: t('dashboard.logPractice'), color: '#3B82F6', route: '/log-practice' },
+        { id: 'timetable', icon: Calendar, label: t('dashboard.timetable'), color: '#10B981', route: '/timetable' },
+        { id: 'class', icon: Users, label: t('dashboard.joinClass'), color: '#F59E0B', route: '/classes' },
+        { id: 'qibla', icon: Compass, label: t('dashboard.qibla'), color: '#EF4444', route: '/qibla' },
     ];
 
     const upcomingMuraja = [
@@ -62,6 +68,13 @@ const Dashboard: React.FC = () => {
         },
     ];
 
+    const todayClasses = getTodaySchedule();
+    const unreadCount = getUnreadNotificationCount();
+
+    const handleQuickAction = (route: string) => {
+        navigate(route);
+    };
+
     return (
         <div className="dashboard-page">
             {/* Gradient Header */}
@@ -72,10 +85,19 @@ const Dashboard: React.FC = () => {
                         <div className="menu-line" />
                     </div>
                     <div className="header-actions">
-                        <button className="header-btn">
+                        <button
+                            className="header-btn notification-btn"
+                            onClick={() => navigate('/notifications')}
+                        >
                             <Bell size={22} />
+                            {unreadCount > 0 && (
+                                <span className="notification-badge">{unreadCount}</span>
+                            )}
                         </button>
-                        <button className="header-btn avatar-btn">
+                        <button
+                            className="header-btn avatar-btn"
+                            onClick={() => navigate('/profile')}
+                        >
                             <User size={20} />
                         </button>
                     </div>
@@ -102,7 +124,7 @@ const Dashboard: React.FC = () => {
             {/* Main Content */}
             <main className="dashboard-content">
                 {/* Tahfeez Progress Card */}
-                <Card className="tahfeez-card">
+                <Card className="tahfeez-card" onClick={() => navigate('/quran')}>
                     <div className="card-header">
                         <div className="card-title-row">
                             <BookOpen size={20} className="card-icon" />
@@ -126,7 +148,7 @@ const Dashboard: React.FC = () => {
                         <p className="last-recited">
                             {t('dashboard.lastRecited')} {tahfeezProgress.lastRecited}
                         </p>
-                        <button className="continue-btn">
+                        <button className="continue-btn" onClick={(e) => { e.stopPropagation(); navigate('/log-practice'); }}>
                             {t('dashboard.continue')}
                             <ArrowRight size={16} />
                         </button>
@@ -138,7 +160,11 @@ const Dashboard: React.FC = () => {
                     <h3 className="section-title">{t('dashboard.quickActions')}</h3>
                     <div className="quick-actions-grid">
                         {quickActions.map((action) => (
-                            <button key={action.id} className="quick-action-btn">
+                            <button
+                                key={action.id}
+                                className="quick-action-btn"
+                                onClick={() => handleQuickAction(action.route)}
+                            >
                                 <div className="action-icon" style={{ backgroundColor: `${action.color}15`, color: action.color }}>
                                     <action.icon size={22} />
                                 </div>
@@ -148,17 +174,42 @@ const Dashboard: React.FC = () => {
                     </div>
                 </section>
 
+                {/* Today's Classes */}
+                {todayClasses.length > 0 && (
+                    <section className="section">
+                        <div className="section-header">
+                            <h3 className="section-title">Today's Classes</h3>
+                            <button className="view-all-btn" onClick={() => navigate('/timetable')}>
+                                {t('dashboard.viewAll')}
+                            </button>
+                        </div>
+                        <div className="muraja-list">
+                            {todayClasses.slice(0, 2).map((item) => (
+                                <Card key={item.id} className="muraja-card" padding="md" onClick={() => navigate('/timetable')}>
+                                    <div className="muraja-icon">
+                                        <Calendar size={18} />
+                                    </div>
+                                    <div className="muraja-content">
+                                        <h4 className="muraja-title">{item.subject}</h4>
+                                        <p className="muraja-due">{item.startTime} · {item.location}</p>
+                                    </div>
+                                </Card>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
                 {/* Upcoming Muraja'a */}
                 <section className="section">
                     <div className="section-header">
                         <h3 className="section-title">{t('dashboard.upcomingMuraja')}</h3>
-                        <button className="view-all-btn">
+                        <button className="view-all-btn" onClick={() => navigate('/quran')}>
                             {t('dashboard.viewAll')}
                         </button>
                     </div>
                     <div className="muraja-list">
                         {upcomingMuraja.map((item) => (
-                            <Card key={item.id} className="muraja-card" padding="md">
+                            <Card key={item.id} className="muraja-card" padding="md" onClick={() => navigate('/quran')}>
                                 <div className="muraja-icon">
                                     <BookOpen size={18} />
                                 </div>

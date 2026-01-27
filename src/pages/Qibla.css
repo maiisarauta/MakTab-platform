@@ -1,0 +1,222 @@
+.qibla-page {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0F766E 0%, #14B8A6 50%, #E8F4F8 100%);
+    padding-bottom: 100px;
+}
+
+/* Header */
+.qibla-header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: transparent;
+}
+
+.qibla-header .back-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+}
+
+.qibla-header .header-title {
+    flex: 1;
+    text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+}
+
+.qibla-header .header-spacer {
+    width: 40px;
+}
+
+/* Content */
+.qibla-content {
+    padding: 0 var(--space-5);
+}
+
+/* Location Card */
+.location-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    margin-bottom: var(--space-6);
+}
+
+.location-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-secondary);
+    border-radius: var(--radius-full);
+    color: var(--color-white);
+}
+
+.location-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.location-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+}
+
+.location-distance {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* Compass */
+.compass-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--space-8);
+}
+
+.compass {
+    width: 280px;
+    height: 280px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease-out;
+}
+
+.compass-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+}
+
+.compass-ring .direction {
+    position: absolute;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+}
+
+.compass-ring .n {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #EF4444;
+}
+
+.compass-ring .e {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.compass-ring .s {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.compass-ring .w {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.qibla-pointer {
+    position: absolute;
+    top: 20px;
+    color: #D4AF37;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease-out;
+}
+
+.compass-center {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+}
+
+.kaaba-icon {
+    font-size: 2.5rem;
+}
+
+.qibla-degrees {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+}
+
+/* Prayer Section */
+.prayer-section {
+    margin-top: var(--space-4);
+}
+
+.prayer-section .section-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--space-3);
+}
+
+.prayer-card {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.prayer-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.prayer-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-2);
+    border-radius: var(--radius-lg);
+    transition: background-color var(--transition-fast);
+}
+
+.prayer-item.active {
+    background-color: rgba(15, 118, 110, 0.1);
+}
+
+.prayer-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-700);
+}
+
+.prayer-item.active .prayer-name {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-secondary);
+}
+
+.prayer-time {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+}
+
+.prayer-item.active .prayer-time {
+    color: var(--color-secondary);
+}

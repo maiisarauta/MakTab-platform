@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, BookOpen, Users, User, Plus, LucideIcon } from 'lucide-react';
+import { Home, BookOpen, Calendar, User, Plus, LucideIcon } from 'lucide-react';
 import './BottomNavbar.css';
 
 interface NavItem {
@@ -17,15 +17,15 @@ const BottomNavbar: React.FC = () => {
     const navItems: NavItem[] = [
         { id: 'home', icon: Home, label: 'Home', route: '/dashboard' },
         { id: 'quran', icon: BookOpen, label: "Qur'an", route: '/quran' },
-        { id: 'classes', icon: Users, label: 'Classes', route: '/classes' },
+        { id: 'timetable', icon: Calendar, label: 'Schedule', route: '/timetable' },
         { id: 'profile', icon: User, label: 'Profile', route: '/profile' },
     ];
 
     const isActive = (route: string) => location.pathname === route;
 
     const handleAddClick = () => {
-        // Handle add action (could be a modal or quick action menu)
-        console.log('Add button clicked');
+        // Navigate to Log Practice page
+        navigate('/log-practice');
     };
 
     return (
@@ -42,7 +42,7 @@ const BottomNavbar: React.FC = () => {
                     </button>
                 ))}
 
-                {/* Center Add Button */}
+                {/* Center Add Button - navigates to Log Practice */}
                 <button className="nav-add-btn" onClick={handleAddClick}>
                     <Plus size={24} />
                 </button>

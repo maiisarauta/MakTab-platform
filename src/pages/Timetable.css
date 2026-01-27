@@ -1,0 +1,216 @@
+.timetable-page {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #E8F4F8 0%, #FFFFFF 15%);
+    padding-bottom: 100px;
+}
+
+/* Header */
+.timetable-header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: transparent;
+}
+
+.timetable-header .back-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-gray-600);
+    cursor: pointer;
+}
+
+.timetable-header .header-title {
+    flex: 1;
+    text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-800);
+}
+
+.timetable-header .header-spacer {
+    width: 40px;
+}
+
+/* Day Tabs */
+.day-tabs-container {
+    padding: 0 var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.day-tabs {
+    display: flex;
+    gap: var(--space-2);
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+}
+
+.day-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-width: 52px;
+    position: relative;
+}
+
+.day-tab:hover {
+    border-color: var(--color-primary);
+}
+
+.day-tab.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.day-tab .day-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-600);
+}
+
+.day-tab.active .day-label {
+    color: var(--color-white);
+}
+
+.day-tab.today .day-label {
+    color: var(--color-primary);
+}
+
+.day-tab.today.active .day-label {
+    color: var(--color-white);
+}
+
+.today-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-primary);
+    border-radius: var(--radius-full);
+}
+
+.day-tab.active .today-dot {
+    background-color: var(--color-white);
+}
+
+/* Content */
+.timetable-content {
+    padding: 0 var(--space-5);
+}
+
+.day-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-800);
+    margin-bottom: var(--space-4);
+}
+
+.today-badge {
+    padding: var(--space-1) var(--space-3);
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+}
+
+/* Schedule List */
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.schedule-card {
+    border-left: 4px solid var(--color-primary);
+}
+
+.schedule-time {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    margin-bottom: var(--space-2);
+}
+
+.schedule-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.schedule-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.schedule-subject {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+    flex: 1;
+}
+
+.schedule-type {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+}
+
+.schedule-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-12) var(--space-4);
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-4);
+}
+
+.empty-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-700);
+    margin-bottom: var(--space-2);
+}
+
+.empty-text {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-500);
+}

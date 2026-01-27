@@ -17,23 +17,25 @@ import {
 } from 'lucide-react';
 import Card from '../components/common/Card';
 import BottomNavbar from '../components/common/BottomNavbar';
+import { userProfile, tahfeezProgress } from '../data/studentData';
 import './Profile.css';
 
 const Profile: React.FC = () => {
     const navigate = useNavigate();
-    const { t } = useTranslation();
-    const [notifications, setNotifications] = useState(true);
-    const [darkMode, setDarkMode] = useState(false);
+    const { t, i18n } = useTranslation();
+    const [notifications, setNotifications] = useState(userProfile.settings.notifications);
+    const [darkMode, setDarkMode] = useState(userProfile.settings.darkMode);
+    const [showLanguageModal, setShowLanguageModal] = useState(false);
 
     const user = {
-        name: 'Ibrahim Yusuf',
-        fullName: 'Ibrahim Musa Yusuf',
-        id: 'MTB-2024-089',
-        class: 'Tahfeez Class 23',
+        name: userProfile.name,
+        fullName: userProfile.name,
+        id: userProfile.id,
+        class: userProfile.halaqa,
         dateOfBirth: '12th Ramadan 1432 AH',
-        guardian: '+234 987 654 3210',
+        guardian: userProfile.phone,
         attendance: '96%',
-        juz: '3 / 30',
+        juz: `${tahfeezProgress.currentJuz} / ${tahfeezProgress.totalJuz}`,
         grade: 'A-',
     };
 
@@ -48,12 +50,38 @@ const Profile: React.FC = () => {
         { id: 'history', icon: Clock, label: 'Attendance History', hasArrow: true },
     ];
 
+    const languages = [
+        { code: 'en', label: 'English', native: 'English' },
+        { code: 'ar', label: 'Arabic', native: 'العربية' },
+        { code: 'ha', label: 'Hausa', native: 'Hausa' },
+    ];
+
+    const handleLanguageChange = (code: string) => {
+        i18n.changeLanguage(code);
+        setShowLanguageModal(false);
+    };
+
+    const handleLogout = () => {
+        // Clear any stored data and navigate to onboarding
+        navigate('/');
+    };
+
+    const handleNotificationToggle = () => {
+        setNotifications(!notifications);
+        // In a real app, this would persist to storage
+    };
+
+    const handleDarkModeToggle = () => {
+        setDarkMode(!darkMode);
+        // In a real app, this would toggle CSS variables
+    };
+
     return (
         <div className="profile-page">
             {/* Gradient Header */}
             <header className="profile-header">
                 <div className="header-top">
-                    <button className="back-btn" onClick={() => navigate(-1)}>
+                    <button className="back-btn" onClick={() => navigate('/dashboard')}>
                         <ArrowLeft size={22} />
                     </button>
                     <h1 className="header-title">My Profile</h1>
@@ -64,7 +92,7 @@ const Profile: React.FC = () => {
 
                 <div className="profile-info">
                     <div className="profile-avatar">
-                        <User size={40} />
+                        <span className="avatar-emoji">👦🏽</span>
                     </div>
                     <h2 className="profile-name">{user.name}</h2>
                     <p className="profile-id">ID: {user.id} • {user.class}</p>
@@ -132,11 +160,15 @@ const Profile: React.FC = () => {
                 <section className="section">
                     <h3 className="section-title">APP SETTINGS</h3>
                     <Card className="info-card" padding="none">
-                        <button className="info-item with-border clickable">
+                        <button
+                            className="info-item with-border clickable"
+                            onClick={() => setShowLanguageModal(true)}
+                        >
                             <div className="info-icon">
                                 <Languages size={18} />
                             </div>
                             <span className="info-label single">Language</span>
+                            <span className="language-value">{i18n.language === 'ar' ? 'العربية' : i18n.language === 'ha' ? 'Hausa' : 'English'}</span>
                             <ChevronRight size={18} className="arrow-icon" />
                         </button>
 
@@ -149,7 +181,7 @@ const Profile: React.FC = () => {
                                 <input
                                     type="checkbox"
                                     checked={notifications}
-                                    onChange={() => setNotifications(!notifications)}
+                                    onChange={handleNotificationToggle}
                                 />
                                 <span className="toggle-slider" />
                             </label>
@@ -164,7 +196,7 @@ const Profile: React.FC = () => {
                                 <input
                                     type="checkbox"
                                     checked={darkMode}
-                                    onChange={() => setDarkMode(!darkMode)}
+                                    onChange={handleDarkModeToggle}
                                 />
                                 <span className="toggle-slider" />
                             </label>
@@ -173,14 +205,35 @@ const Profile: React.FC = () => {
                 </section>
 
                 {/* Sign Out Button */}
-                <button className="signout-btn">
+                <button className="signout-btn" onClick={handleLogout}>
                     <LogOut size={18} />
                     <span>Sign Out</span>
                 </button>
 
                 {/* Version */}
-                <p className="version-text">{t('footer.version')}</p>
+                <p className="version-text">MakTab Tahfeez & Islamiyya App v1.0</p>
             </main>
+
+            {/* Language Modal */}
+            {showLanguageModal && (
+                <div className="modal-overlay" onClick={() => setShowLanguageModal(false)}>
+                    <div className="language-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="modal-title">Select Language</h3>
+                        <div className="language-list">
+                            {languages.map((lang) => (
+                                <button
+                                    key={lang.code}
+                                    className={`language-option ${i18n.language === lang.code ? 'active' : ''}`}
+                                    onClick={() => handleLanguageChange(lang.code)}
+                                >
+                                    <span className="lang-label">{lang.label}</span>
+                                    <span className="lang-native">{lang.native}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <BottomNavbar />
         </div>

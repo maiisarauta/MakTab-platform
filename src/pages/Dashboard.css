@@ -67,6 +67,27 @@
     color: var(--color-secondary);
 }
 
+.notification-btn {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-error);
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+    border: 2px solid var(--color-secondary);
+}
+
 .greeting-row {
     margin-bottom: var(--space-3);
 }

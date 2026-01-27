@@ -1,0 +1,98 @@
+.install-prompt-overlay {
+    position: fixed;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0 var(--space-4);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.install-prompt-card {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #0D9488 100%);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.install-prompt-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.install-prompt-icon svg {
+    color: white;
+}
+
+.install-prompt-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.install-prompt-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: white;
+    margin: 0 0 2px 0;
+}
+
+.install-prompt-text {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+
+.install-prompt-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+.install-btn {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: none;
+}
+
+.install-btn.primary {
+    background: white;
+    color: var(--color-primary);
+}
+
+.install-btn.primary:hover {
+    transform: scale(1.05);
+}
+
+.install-btn.secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.install-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+}

@@ -1,0 +1,303 @@
+.log-practice-page {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #E8F4F8 0%, #FFFFFF 15%);
+    padding-bottom: 100px;
+}
+
+/* Header */
+.practice-header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: transparent;
+}
+
+.practice-header .back-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-gray-600);
+    cursor: pointer;
+}
+
+.practice-header .header-title {
+    flex: 1;
+    text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-800);
+}
+
+.practice-header .header-spacer {
+    width: 40px;
+}
+
+/* Content */
+.practice-content {
+    padding: 0 var(--space-5);
+}
+
+/* Stats Row */
+.log-practice-page .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+
+.log-practice-page .stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.log-practice-page .stat-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-lg);
+    color: var(--color-primary);
+}
+
+.log-practice-page .stat-card.streak .stat-icon {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--color-warning);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-info .stat-value {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-800);
+}
+
+.stat-info .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* Timer Card */
+.timer-card {
+    text-align: center;
+    margin-bottom: var(--space-6);
+}
+
+.timer-display {
+    margin-bottom: var(--space-5);
+}
+
+.timer-text {
+    font-size: 4rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-800);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+}
+
+/* Surah Selector */
+.surah-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-gray-100);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-700);
+    cursor: pointer;
+    margin-bottom: var(--space-4);
+}
+
+.surah-selector .surah-arabic {
+    color: var(--color-primary);
+    font-family: var(--font-arabic);
+}
+
+/* Surah Picker */
+.surah-picker {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-4);
+}
+
+.surah-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--color-gray-100);
+    text-align: left;
+    cursor: pointer;
+}
+
+.surah-option:last-child {
+    border-bottom: none;
+}
+
+.surah-option.active {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.surah-option .surah-number {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-gray-100);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-600);
+}
+
+.surah-option .surah-name {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-800);
+}
+
+/* Practice Types */
+.practice-types {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: center;
+    margin-bottom: var(--space-5);
+    overflow-x: auto;
+}
+
+.type-btn {
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-600);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.type-btn.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Timer Controls */
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+}
+
+.control-btn {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.control-btn.primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-lg);
+}
+
+.control-btn.primary:hover {
+    transform: scale(1.05);
+}
+
+.control-btn.primary.pause {
+    background-color: var(--color-warning);
+}
+
+.control-btn.stop {
+    width: 56px;
+    height: 56px;
+    background-color: var(--color-error);
+    color: var(--color-white);
+}
+
+/* Recent Section */
+.recent-section {
+    margin-top: var(--space-4);
+}
+
+.recent-section .section-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+    margin-bottom: var(--space-3);
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.session-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.session-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-full);
+    color: var(--color-success);
+}
+
+.session-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.session-surah {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-800);
+}
+
+.session-meta {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    text-transform: capitalize;
+}
+
+.session-date {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
