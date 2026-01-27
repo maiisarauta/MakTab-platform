@@ -19,7 +19,7 @@ interface Surah {
 
 const Quran: React.FC = () => {
     const [activeTab, setActiveTab] = useState<TabType>('surah');
-    const { t } = useTranslation();
+    useTranslation();
 
     const currentProgress = {
         surah: 'Surah Al-Baqarah',

@@ -22,7 +22,7 @@ import './Profile.css';
 
 const Profile: React.FC = () => {
     const navigate = useNavigate();
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const [notifications, setNotifications] = useState(userProfile.settings.notifications);
     const [darkMode, setDarkMode] = useState(userProfile.settings.darkMode);
     const [showLanguageModal, setShowLanguageModal] = useState(false);

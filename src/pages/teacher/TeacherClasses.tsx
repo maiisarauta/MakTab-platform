@@ -9,7 +9,6 @@ import {
     ClipboardList,
     BookOpen,
     Users,
-    FileText,
 } from 'lucide-react';
 import Card from '../../components/common/Card';
 import TeacherBottomNavbar from '../../components/common/TeacherBottomNavbar';

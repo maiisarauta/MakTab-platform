@@ -9,9 +9,9 @@ const Qibla: React.FC = () => {
     const navigate = useNavigate();
     const [qiblaDirection, setQiblaDirection] = useState(135); // Default direction to Makkah
     const [compassRotation, setCompassRotation] = useState(0);
-    const [location, setLocation] = useState({ lat: 9.0765, lng: 7.3986 }); // Default: Abuja, Nigeria
-    const [locationName, setLocationName] = useState('Abuja, Nigeria');
-    const [distanceToMakkah, setDistanceToMakkah] = useState('4,732 km');
+    const [location] = useState({ lat: 9.0765, lng: 7.3986 }); // Default: Abuja, Nigeria
+    const [locationName] = useState('Abuja, Nigeria');
+    const [distanceToMakkah] = useState('4,732 km');
 
     // Makkah coordinates
     const makkah = { lat: 21.4225, lng: 39.8262 };

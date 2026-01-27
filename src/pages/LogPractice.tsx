@@ -12,7 +12,6 @@ import {
     ChevronDown,
 } from 'lucide-react';
 import Card from '../components/common/Card';
-import Button from '../components/common/Button';
 import BottomNavbar from '../components/common/BottomNavbar';
 import { surahList, practiceLogs, tahfeezProgress, PracticeLog } from '../data/studentData';
 import './LogPractice.css';

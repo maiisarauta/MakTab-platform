@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, MapPin, User } from 'lucide-react';
 import Card from '../components/common/Card';
 import BottomNavbar from '../components/common/BottomNavbar';
-import { weeklySchedule, getScheduleByDay, getTypeColor, ScheduleItem } from '../data/studentData';
+import { getScheduleByDay, getTypeColor } from '../data/studentData';
 import './Timetable.css';
 
 type DayType = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';

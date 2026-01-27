@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, TrendingUp, TrendingDown } from 'lucide-react';
+import { ArrowLeft, Calendar, TrendingUp } from 'lucide-react';
 import Card from '../../components/common/Card';
 import ManagementBottomNavbar from '../../components/common/ManagementBottomNavbar';
 import './ManagementReports.css';

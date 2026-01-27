@@ -18,7 +18,7 @@ import './TeacherDashboard.css';
 
 const TeacherDashboard: React.FC = () => {
     const navigate = useNavigate();
-    const { t } = useTranslation();
+    useTranslation();
 
     const teacherData = {
         name: 'Malam Ibrahim',

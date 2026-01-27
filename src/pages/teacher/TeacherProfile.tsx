@@ -19,7 +19,7 @@ import './TeacherProfile.css';
 
 const TeacherProfile: React.FC = () => {
     const navigate = useNavigate();
-    const [notifications, setNotifications] = useState(true);
+    const [notifications] = useState(true);
 
     const teacher = {
         name: 'Malam Ibrahim',
