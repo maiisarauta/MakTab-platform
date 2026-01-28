@@ -1,22 +1,24 @@
 {
     "common": {
         "appName": "MakTab",
-        "appTagline": "Gudanar da Tahfeez & Islamiyya",
-        "getStarted": "Fara Yanzu",
-        "next": "Gaba",
+        "appTagline": "Gudanar da Tahfeez da Madarasar Islama",
+        "getStarted": "Fara",
+        "next": "Na gaba",
         "skip": "Tsallake",
         "login": "Shiga",
-        "register": "Yi Rajista",
+        "register": "Yin Rajista",
         "continue": "Ci gaba",
         "cancel": "Soke",
         "save": "Ajiye",
-        "delete": "Share",
+        "delete": "Goge",
         "edit": "Gyara",
         "back": "Baya",
-        "loading": "Ana lodi...",
+        "loading": "Yana lodawa...",
         "error": "Kuskure",
-        "success": "Nasara",
-        "startUsingApp": "Fara Amfani da App"
+        "success": "Nasarawa",
+        "startUsingApp": "Fara amfani da App",
+        "done": "An gama",
+        "discard": "Yar da shi"
     },
     "languages": {
         "english": "Turanci",
@@ -28,76 +30,176 @@
     },
     "onboarding": {
         "slide1": {
-            "title": "Dijital Makarantarka",
-            "description": "Sauƙaƙe gudanar da zuwa, rikodin, da bayanan ɗalibai a wuri ɗaya mai tsaro."
+            "title": "Mayar da Makarantarku ta Digital",
+            "description": "Sarrafa halarta, bayanai, da bayanan ɗalibai cikin sauƙi a wuri ɗaya amintacce."
         },
         "slide2": {
-            "title": "Tallafin Tahfeez & Muraja'a",
-            "description": "Tallafa wa tafiyar haddace Alqur'ani tare da shirya muraja'a da ƙimar Tajweed."
+            "title": "Taimakon Tahfeez da Muraja'a",
+            "description": "Taimaka wa tafiyarku na haddar Alkur'ani tare da tsara bita da auna Tajwid."
         },
         "slide3": {
-            "title": "Koyo Mai Hulɗa & Amsa",
-            "description": "Musayar saƙon murya da amsa ta murya don karanta Alqur'ani, Hadisi, da darusan Larabci."
+            "title": "Koyo na Mu'amala da Martani",
+            "description": "Musayar bayanan murya da martani dangane da sauti don karatun Alkur'ani, Hadisi, da darussan Larabci."
         }
     },
     "roleSelection": {
         "greeting": "Assalamu Alaikum",
-        "selectRole": "Da fatan za a zaɓi matsayinka don ci gaba.",
-        "welcomeBack": "Barka da dawo! Da fatan za a shigar da bayananku.",
+        "selectRole": "Da fatan za a zaɓi matsayinku don ci gaba.",
+        "welcomeBack": "Barka da dawowa! Da fatan za a shigar da bayanan ku.",
         "student": {
-            "title": "Ɗalibi",
-            "description": "Samun damar darasi, ci gaban Alqur'ani & sakamako"
+            "title": "Dalibi",
+            "description": "Samun dama ga darussa, ci gaban Alkur'ani da sakamako"
         },
         "teacher": {
             "title": "Malami",
-            "description": "Gudanar da azuzuwa, zuwa & maki"
+            "description": "Sarrafa azuzuwan, halarta da bayar da maki"
         },
         "management": {
-            "title": "Gudanarwa",
-            "description": "Shafin gudanarwa, rikodi & rahoto"
+            "title": "Shugabanci",
+            "description": "Shafin jagora na Admin, bayanai da rahoto"
         }
     },
     "auth": {
-        "emailOrPhone": "Imel ko Lambar Waya",
-        "emailOrPhonePlaceholder": "Shigar da imel ko waya",
+        "emailOrPhone": "I-mel ko Lambar Waya",
+        "emailOrPhonePlaceholder": "Shigar da i-mel ko lambar waya",
         "password": "Kalmar sirri",
         "passwordPlaceholder": "Shigar da kalmar sirri",
-        "forgotPassword": "Manta Kalmar sirri?",
+        "forgotPassword": "An manta kalmar sirri?",
         "orContinueWith": "KO CI GABA DA",
-        "noAccount": "Ba ka da asusu?",
-        "createAccount": "Ƙirƙiri Asusu",
-        "hasAccount": "Riga kana da asusu?",
+        "noAccount": "Ba ku da asusu?",
+        "createAccount": "Ƙirƙiri Asusun",
+        "hasAccount": "Kuna da asusu riga?",
         "google": "Google",
         "apple": "Apple"
     },
     "dashboard": {
         "greeting": "Assalamu Alaikum,",
         "tahfeezProgress": "Ci gaban Tahfeez",
-        "onTrack": "Akan Hanya",
-        "behind": "Baya",
-        "ahead": "Gaba",
+        "onTrack": "A Kan Saita",
+        "behind": "A Baya",
+        "ahead": "A Gaba",
         "currentGoal": "BURIN YANZU",
-        "lastRecited": "Karatun ƙarshe:",
+        "lastRecited": "An Karanta Na Ƙarshe:",
         "continue": "Ci gaba",
-        "quickActions": "Ayyuka Masu Sauri",
-        "logPractice": "Shigar da Aiki",
-        "timetable": "Jadawalin Lokaci",
+        "quickActions": "Ayyuka Cikin Sauri",
+        "logPractice": "Yi Rikodin Karatu",
+        "timetable": "Tsarin Lokaci",
         "joinClass": "Shiga Aji",
         "qibla": "Alƙibla",
-        "upcomingMuraja": "Muraja'a Mai Zuwa",
+        "upcomingMuraja": "Muraja'a mai Zuwa",
         "viewAll": "Duba Duka",
-        "assignments": "Ayyukan Gida",
-        "recentFeedback": "Amsa Na Baya-bayan nan",
-        "playAudioNote": "Kunna Saƙon Murya",
+        "assignments": "Ayyuka",
+        "recentFeedback": "Martani na Kwanan nan",
+        "playAudioNote": "Saurari Bayanin Murya",
         "tomorrow": "Gobe",
         "today": "Yau",
-        "revisionDue": "Muraja'a ta isa"
+        "revisionDue": "Bitawa ya kamata a yi kafin"
     },
     "surah": {
-        "juz": "Juz'i",
-        "ayah": "Aya"
+        "juz": "Juz",
+        "ayah": "Ayah",
+        "verses": "Ayoyi",
+        "meccan": "Makkiyya",
+        "madinan": "Madaniyya",
+        "surah": "Surah",
+        "page": "Shafi",
+        "bookmark": "Alama"
+    },
+    "quran": {
+        "title": "Al-Qur'an",
+        "subtitle": "Ci gaba da karatunka",
+        "continueReading": "CI GABA DA KARATU",
+        "searchPlaceholder": "Nemi Surah, Juz ko Ayah...",
+        "murajaToday": "Muraja'a ta Yau",
+        "due": "Ya Kamata",
+        "onTrack": "A Kan Saita",
+        "completed": "An kammala",
+        "inProgress": "Ana kan yi",
+        "notStarted": "Ba a fara ba",
+        "noBookmarksYet": "Babu Alamu tukunna",
+        "noBookmarksHint": "Taɓa alamar kowace Surah don adana ta a nan don samun saurin shiga."
+    },
+    "quranSettings": {
+        "title": "Saitunan Alkur'ani",
+        "arabicFontSize": "Girman Rubutun Larabci",
+        "reciter": "Mai Karatu",
+        "showTranslation": "Nuna Fassara",
+        "translationLanguage": "Harshen Fassara",
+        "readingMode": "Yanayin Karatu",
+        "pageByPage": "Shafi-shafi",
+        "continuous": "Mai gudana"
+    },
+    "recording": {
+        "getReady": "Shirya...",
+        "recordingWillStartIn": "Rikodin zai fara cikin daƙiƙa {{seconds}}",
+        "recording": "Ana rikodin...",
+        "stopRecording": "Tsaya da Rikodin",
+        "recordingComplete": "An kammala Rikodin!",
+        "duration": "Tsayin Lokaci",
+        "saveRecording": "Ajiye Rikodin",
+        "micAccessDenied": "An hana izinin amfani da makirofon. Da fatan za a ba da izini.",
+        "noMicFound": "Ba a sami makirofon ba. Da fatan za a haɗa makirofon.",
+        "failed": "Rikodin ya gaza"
+    },
+    "logPractice": {
+        "title": "Yi Rikodin Karatu",
+        "today": "Yau",
+        "streak": "Ci gaba",
+        "memorization": "Hadda",
+        "revision": "Bita",
+        "recitation": "Karatu",
+        "recentSessions": "Karatu na baya",
+        "recordedAudioPractice": "Karatu ta sautin murya",
+        "lastRecording": "Rikodin ƙarshe:"
+    },
+    "profile": {
+        "title": "Asusu na",
+        "fullName": "Cikakken Suna",
+        "dateOfBirth": "Ranar Haihuwa",
+        "guardianContact": "Lambar Wayar Waliyyi",
+        "attendance": "HALARTA",
+        "juz": "JUZ",
+        "grade": "MAKI",
+        "personalInfo": "BAYANAI NA KANKA",
+        "academics": "ILIMI",
+        "academicReports": "Rahoton Karatu",
+        "attendanceHistory": "Tarihin Halarta",
+        "appSettings": "SAITUNAN APP",
+        "language": "Harshe",
+        "notifications": "Sanarwa",
+        "darkMode": "Yanayin Duhu",
+        "signOut": "Fita",
+        "selectLanguage": "Zaɓi Harshe"
     },
     "footer": {
         "version": "MakTab Tahfeez & Islamiyya App v1.0"
+    },
+    "notifications": {
+        "title": "Sanarwa",
+        "unreadCount": "Sanarwa {{count}} da ba a karanta ba",
+        "unreadCount_plural": "Sanarwa {{count}} da ba a karanta ba",
+        "noNotifications": "Babu sanarwa",
+        "emptyHint": "Ka gama duka! Duba nan gaba.",
+        "markAllAsRead": "Sa dukka a matsayin an karanta"
+    },
+    "timetable": {
+        "title": "Jadawalin Lokaci",
+        "today": "Yau",
+        "noClasses": "Babu darussa",
+        "noClassesHint": "Ba ka da wani darasi da aka tsara na wannan ranar.",
+        "sun": "Lah",
+        "mon": "Lit",
+        "tue": "Tal",
+        "wed": "Lar",
+        "thu": "Alh",
+        "fri": "Jim",
+        "sat": "Asa",
+        "sunday": "Lahadi",
+        "monday": "Litinin",
+        "tuesday": "Talata",
+        "wednesday": "Laraba",
+        "thursday": "Alhamis",
+        "friday": "Juma'a",
+        "saturday": "Asabar"
     }
 }

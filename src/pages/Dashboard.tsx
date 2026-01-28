@@ -7,13 +7,13 @@ import {
     Users,
     Compass,
     ArrowRight,
-    Play,
     User,
     Bell,
 } from 'lucide-react';
 import Card from '../components/common/Card';
 import ProgressCircle from '../components/common/ProgressCircle';
 import BottomNavbar from '../components/common/BottomNavbar';
+import AudioPlayer from '../components/common/AudioPlayer/AudioPlayer';
 import {
     userProfile,
     tahfeezProgress as progressData,
@@ -65,6 +65,8 @@ const Dashboard: React.FC = () => {
             time: '2 hours ago',
             message: '"Good effort today Ibrahim. Please focus more on your Tajweed in verse 253, specifically the Ghunnah."',
             hasAudio: true,
+            // Sample audio URL for demo (Quran recitation sample)
+            audioUrl: 'https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/1.mp3',
         },
     ];
 
@@ -178,7 +180,7 @@ const Dashboard: React.FC = () => {
                 {todayClasses.length > 0 && (
                     <section className="section">
                         <div className="section-header">
-                            <h3 className="section-title">Today's Classes</h3>
+                            <h3 className="section-title">{t('dashboard.timetable')}</h3>
                             <button className="view-all-btn" onClick={() => navigate('/timetable')}>
                                 {t('dashboard.viewAll')}
                             </button>
@@ -257,11 +259,12 @@ const Dashboard: React.FC = () => {
                                     </div>
                                 </div>
                                 <p className="feedback-message">{item.message}</p>
-                                {item.hasAudio && (
-                                    <button className="audio-btn">
-                                        <Play size={16} />
-                                        <span>{t('dashboard.playAudioNote')}</span>
-                                    </button>
+                                {item.hasAudio && item.audioUrl && (
+                                    <AudioPlayer
+                                        audioUrl={item.audioUrl}
+                                        compact={true}
+                                        label={t('dashboard.playAudioNote')}
+                                    />
                                 )}
                             </Card>
                         ))}

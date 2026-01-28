@@ -23,6 +23,10 @@
   --color-white: #FFFFFF;
   --color-black: #000000;
 
+  /* Page Backgrounds */
+  --color-page-bg-top: #E8F4F8;
+  --color-page-bg-bottom: #FFFFFF;
+
   --color-gray-50: #F9FAFB;
   --color-gray-100: #F3F4F6;
   --color-gray-200: #E5E7EB;
@@ -97,6 +101,36 @@
   --z-dropdown: 100;
   --z-modal: 200;
   --z-toast: 300;
+}
+
+/* Dark Mode Theme */
+[data-theme="dark"] {
+  --color-gray-50: #0F172A;
+  --color-gray-100: #1E293B;
+  --color-gray-200: #334155;
+  --color-gray-300: #475569;
+  --color-gray-400: #64748B;
+  --color-gray-500: #94A3B8;
+  --color-gray-600: #CBD5E1;
+  --color-gray-700: #E2E8F0;
+  --color-gray-800: #F1F5F9;
+  --color-gray-900: #F8FAFC;
+
+  --color-white: #1E293B;
+  --color-black: #F8FAFC;
+
+  /* Page Backgrounds */
+  --color-page-bg-top: #1E293B;
+  --color-page-bg-bottom: #0F172A;
+
+  --gradient-header: linear-gradient(135deg, #0A5A54 0%, #0F766E 50%, #083D39 100%);
+  --gradient-card: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 1) 100%);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* ===================================

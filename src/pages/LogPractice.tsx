@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     ArrowLeft,
     Play,
@@ -10,9 +11,13 @@ import {
     Flame,
     BookOpen,
     ChevronDown,
+    Mic,
 } from 'lucide-react';
 import Card from '../components/common/Card';
 import BottomNavbar from '../components/common/BottomNavbar';
+import RecordingPopup from '../components/common/RecordingPopup/RecordingPopup';
+import AudioPlayer from '../components/common/AudioPlayer/AudioPlayer';
+import { audioStorage } from '../services/storageService';
 import { surahList, practiceLogs, tahfeezProgress, PracticeLog } from '../data/studentData';
 import './LogPractice.css';
 
@@ -26,6 +31,9 @@ const LogPractice: React.FC = () => {
     const [practiceType, setPracticeType] = useState<PracticeType>('memorization');
     const [showSurahPicker, setShowSurahPicker] = useState(false);
     const [logs, setLogs] = useState<PracticeLog[]>(practiceLogs);
+    const [showRecordingPopup, setShowRecordingPopup] = useState(false);
+    const [lastRecording, setLastRecording] = useState<{ blob: Blob; duration: number } | null>(null);
+    const { t } = useTranslation();
 
     // Timer logic
     useEffect(() => {
@@ -72,10 +80,37 @@ const LogPractice: React.FC = () => {
         setSeconds(0);
     };
 
+    const handleRecordingComplete = async (blob: Blob, duration: number) => {
+        setLastRecording({ blob, duration });
+
+        // Save recording to localStorage
+        const recordingId = `rec-${Date.now()}`;
+        await audioStorage.saveRecording(recordingId, blob, {
+            duration,
+            surahName: selectedSurah.name,
+            surahNumber: selectedSurah.number,
+            type: practiceType,
+        });
+
+        // Create a practice log with recording
+        const newLog: PracticeLog = {
+            id: `log-${Date.now()}`,
+            date: new Date().toISOString().split('T')[0],
+            duration: Math.ceil(duration / 60) || 1,
+            surahName: selectedSurah.name,
+            surahNumber: selectedSurah.number,
+            ayahStart: 1,
+            ayahEnd: selectedSurah.ayahCount,
+            type: practiceType,
+            notes: 'Recorded audio practice',
+        };
+        setLogs([newLog, ...logs]);
+    };
+
     const practiceTypes: { id: PracticeType; label: string }[] = [
-        { id: 'memorization', label: 'Memorization' },
-        { id: 'revision', label: 'Revision' },
-        { id: 'recitation', label: 'Recitation' },
+        { id: 'memorization', label: t('logPractice.memorization') },
+        { id: 'revision', label: t('logPractice.revision') },
+        { id: 'recitation', label: t('logPractice.recitation') },
     ];
 
     return (
@@ -85,7 +120,7 @@ const LogPractice: React.FC = () => {
                 <button className="back-btn" onClick={() => navigate(-1)}>
                     <ArrowLeft size={22} />
                 </button>
-                <h1 className="header-title">Log Practice</h1>
+                <h1 className="header-title">{t('logPractice.title')}</h1>
                 <div className="header-spacer" />
             </header>
 
@@ -99,7 +134,7 @@ const LogPractice: React.FC = () => {
                         </div>
                         <div className="stat-info">
                             <span className="stat-value">{tahfeezProgress.todayPracticeMinutes} min</span>
-                            <span className="stat-label">Today</span>
+                            <span className="stat-label">{t('logPractice.today')}</span>
                         </div>
                     </Card>
                     <Card className="stat-card streak" padding="md">
@@ -108,7 +143,7 @@ const LogPractice: React.FC = () => {
                         </div>
                         <div className="stat-info">
                             <span className="stat-value">{tahfeezProgress.streak} days</span>
-                            <span className="stat-label">Streak 🔥</span>
+                            <span className="stat-label">{t('logPractice.streak')} 🔥</span>
                         </div>
                     </Card>
                 </div>
@@ -174,12 +209,26 @@ const LogPractice: React.FC = () => {
                                 <Square size={24} />
                             </button>
                         )}
+                        <button
+                            className="control-btn record"
+                            onClick={() => setShowRecordingPopup(true)}
+                        >
+                            <Mic size={24} />
+                        </button>
                     </div>
+
+                    {/* Last Recording Preview */}
+                    {lastRecording && (
+                        <div className="recording-preview">
+                            <p className="preview-label">{t('logPractice.lastRecording')}</p>
+                            <AudioPlayer audioBlob={lastRecording.blob} compact />
+                        </div>
+                    )}
                 </Card>
 
                 {/* Recent Sessions */}
                 <section className="recent-section">
-                    <h3 className="section-title">Recent Sessions</h3>
+                    <h3 className="section-title">{t('logPractice.recentSessions')}</h3>
                     <div className="sessions-list">
                         {logs.slice(0, 5).map((log) => (
                             <Card key={log.id} className="session-card" padding="sm">
@@ -200,6 +249,13 @@ const LogPractice: React.FC = () => {
             </main>
 
             <BottomNavbar />
+
+            {/* Recording Popup */}
+            <RecordingPopup
+                isOpen={showRecordingPopup}
+                onClose={() => setShowRecordingPopup(false)}
+                onRecordingComplete={handleRecordingComplete}
+            />
         </div>
     );
 };

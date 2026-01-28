@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Bell, CheckCheck, Trophy, AlertCircle, Megaphone, Clock } from 'lucide-react';
 import Card from '../components/common/Card';
@@ -8,6 +9,7 @@ import './Notifications.css';
 
 const Notifications: React.FC = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [notificationList, setNotificationList] = useState<Notification[]>(initialNotifications);
 
     const getIcon = (type: Notification['type']) => {
@@ -75,9 +77,9 @@ const Notifications: React.FC = () => {
                 <button className="back-btn" onClick={() => navigate(-1)}>
                     <ArrowLeft size={22} />
                 </button>
-                <h1 className="header-title">Notifications</h1>
+                <h1 className="header-title">{t('notifications.title')}</h1>
                 {unreadCount > 0 && (
-                    <button className="mark-read-btn" onClick={markAllAsRead}>
+                    <button className="mark-read-btn" title={t('notifications.markAllAsRead')} onClick={markAllAsRead}>
                         <CheckCheck size={20} />
                     </button>
                 )}
@@ -86,7 +88,7 @@ const Notifications: React.FC = () => {
             {/* Unread Badge */}
             {unreadCount > 0 && (
                 <div className="unread-banner">
-                    <span>{unreadCount} unread notification{unreadCount > 1 ? 's' : ''}</span>
+                    <span>{t('notifications.unreadCount', { count: unreadCount })}</span>
                 </div>
             )}
 
@@ -119,8 +121,8 @@ const Notifications: React.FC = () => {
                 ) : (
                     <div className="empty-state">
                         <div className="empty-icon">🔔</div>
-                        <h3 className="empty-title">No Notifications</h3>
-                        <p className="empty-text">You're all caught up! Check back later.</p>
+                        <h3 className="empty-title">{t('notifications.noNotifications')}</h3>
+                        <p className="empty-text">{t('notifications.emptyHint')}</p>
                     </div>
                 )}
             </main>

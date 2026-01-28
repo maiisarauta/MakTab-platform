@@ -16,7 +16,9 @@
         "loading": "Loading...",
         "error": "Error",
         "success": "Success",
-        "startUsingApp": "Start Using App"
+        "startUsingApp": "Start Using App",
+        "done": "Done",
+        "discard": "Discard"
     },
     "languages": {
         "english": "English",
@@ -95,9 +97,109 @@
     },
     "surah": {
         "juz": "Juz",
-        "ayah": "Ayah"
+        "ayah": "Ayah",
+        "verses": "Verses",
+        "meccan": "Meccan",
+        "madinan": "Madinan",
+        "surah": "Surah",
+        "page": "Page",
+        "bookmark": "Bookmark"
+    },
+    "quran": {
+        "title": "Al-Qur'an",
+        "subtitle": "Keep up your recitation",
+        "continueReading": "CONTINUE READING",
+        "searchPlaceholder": "Search Surah, Juz or Ayah...",
+        "murajaToday": "Muraja'a Today",
+        "due": "Due",
+        "onTrack": "On Track",
+        "completed": "Completed",
+        "inProgress": "In Progress",
+        "notStarted": "Not Started",
+        "noBookmarksYet": "No Bookmarks Yet",
+        "noBookmarksHint": "Tap the bookmark icon on any Surah to save it here for quick access."
+    },
+    "quranSettings": {
+        "title": "Quran Settings",
+        "arabicFontSize": "Arabic Font Size",
+        "reciter": "Reciter",
+        "showTranslation": "Show Translation",
+        "translationLanguage": "Translation Language",
+        "readingMode": "Reading Mode",
+        "pageByPage": "Page by Page",
+        "continuous": "Continuous"
+    },
+    "recording": {
+        "getReady": "Get Ready...",
+        "recordingWillStartIn": "Recording will start in {{seconds}} seconds",
+        "recording": "Recording...",
+        "stopRecording": "Stop Recording",
+        "recordingComplete": "Recording Complete!",
+        "duration": "Duration",
+        "saveRecording": "Save Recording",
+        "micAccessDenied": "Microphone access denied. Please allow microphone access to record.",
+        "noMicFound": "No microphone found. Please connect a microphone.",
+        "failed": "Recording failed"
+    },
+    "logPractice": {
+        "title": "Log Practice",
+        "today": "Today",
+        "streak": "Streak",
+        "memorization": "Memorization",
+        "revision": "Revision",
+        "recitation": "Recitation",
+        "recentSessions": "Recent Sessions",
+        "recordedAudioPractice": "Recorded audio practice",
+        "lastRecording": "Last Recording:"
+    },
+    "profile": {
+        "title": "My Profile",
+        "fullName": "Full Name",
+        "dateOfBirth": "Date of Birth",
+        "guardianContact": "Guardian Contact",
+        "attendance": "ATTENDANCE",
+        "juz": "JUZ",
+        "grade": "GRADE",
+        "personalInfo": "PERSONAL INFORMATION",
+        "academics": "ACADEMICS",
+        "academicReports": "Academic Reports",
+        "attendanceHistory": "Attendance History",
+        "appSettings": "APP SETTINGS",
+        "language": "Language",
+        "notifications": "Notifications",
+        "darkMode": "Dark Mode",
+        "signOut": "Sign Out",
+        "selectLanguage": "Select Language"
     },
     "footer": {
         "version": "MakTab Tahfeez & Islamiyya App v1.0"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "unreadCount": "{{count}} unread notification",
+        "unreadCount_plural": "{{count}} unread notifications",
+        "noNotifications": "No Notifications",
+        "emptyHint": "You're all caught up! Check back later.",
+        "markAllAsRead": "Mark all as read"
+    },
+    "timetable": {
+        "title": "Timetable",
+        "today": "Today",
+        "noClasses": "No Classes",
+        "noClassesHint": "You don't have any classes scheduled for this day.",
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday"
     }
 }

@@ -1,8 +1,8 @@
 {
     "common": {
         "appName": "مكتب",
-        "appTagline": "إدارة التحفيظ والإسلامية",
-        "getStarted": "ابدأ الآن",
+        "appTagline": "إدارة التحفيظ والمدرسة الإسلامية",
+        "getStarted": "ابدأ",
         "next": "التالي",
         "skip": "تخطي",
         "login": "تسجيل الدخول",
@@ -16,45 +16,47 @@
         "loading": "جاري التحميل...",
         "error": "خطأ",
         "success": "نجاح",
-        "startUsingApp": "ابدأ استخدام التطبيق"
+        "startUsingApp": "ابدأ استخدام التطبيق",
+        "done": "تم",
+        "discard": "تجاهل"
     },
     "languages": {
         "english": "الإنجليزية",
         "arabic": "العربية",
         "hausa": "الهوسا",
         "eng": "إنج",
-        "ar": "عر",
-        "hau": "هو"
+        "ar": "عرب",
+        "hau": "هوس"
     },
     "onboarding": {
         "slide1": {
-            "title": "رقمنة مدرستك الإسلامية",
-            "description": "إدارة سهلة للحضور والسجلات وبيانات الطلاب في مكان واحد آمن."
+            "title": "رقمنة مدرستك",
+            "description": "قم بإدارة الحضور والسجلات وبيانات الطلاب بسهولة في مكان واحد آمن."
         },
         "slide2": {
             "title": "دعم التحفيظ والمراجعة",
-            "description": "دعم رحلة حفظ القرآن الكريم مع جدولة المراجعات وتقييمات التجويد."
+            "description": "ادعم رحلة حفظ القرآن الكريم بمراجعات مجدولة وتقييمات التجويد."
         },
         "slide3": {
-            "title": "التعلم التفاعلي والتغذية الراجعة",
-            "description": "تبادل الملاحظات الصوتية والتغذية الراجعة الصوتية لتلاوة القرآن والحديث ودروس اللغة العربية."
+            "title": "التعلم التفاعلي والتعليقات",
+            "description": "تبادل الملاحظات الصوتية والتعليقات الصوتية لتلاوة القرآن والحديث ودروس اللغة العربية."
         }
     },
     "roleSelection": {
         "greeting": "السلام عليكم",
-        "selectRole": "الرجاء اختيار دورك للمتابعة.",
-        "welcomeBack": "مرحباً بعودتك! الرجاء إدخال بياناتك.",
+        "selectRole": "يرجى اختيار دورك للمتابعة.",
+        "welcomeBack": "مرحباً بعودتك! يرجى إدخال بياناتك.",
         "student": {
             "title": "طالب",
-            "description": "الوصول إلى الدروس وتقدم القرآن والنتائج"
+            "description": "الوصول إلى الدروس، تقدم القرآن والنتائج"
         },
         "teacher": {
-            "title": "معلم",
-            "description": "إدارة الفصول والحضور والدرجات"
+            "title": "مدرس",
+            "description": "إدارة الفصول، الحضور والدرجات"
         },
         "management": {
             "title": "الإدارة",
-            "description": "لوحة التحكم والسجلات والتقارير"
+            "description": "لوحة تحكم المسؤول، السجلات والتقارير"
         }
     },
     "auth": {
@@ -62,42 +64,142 @@
         "emailOrPhonePlaceholder": "أدخل بريدك الإلكتروني أو هاتفك",
         "password": "كلمة المرور",
         "passwordPlaceholder": "أدخل كلمة المرور",
-        "forgotPassword": "نسيت كلمة المرور؟",
-        "orContinueWith": "أو تابع مع",
+        "forgotPassword": "هل نسيت كلمة المرور؟",
+        "orContinueWith": "أو المتابعة باستخدام",
         "noAccount": "ليس لديك حساب؟",
         "createAccount": "إنشاء حساب",
         "hasAccount": "لديك حساب بالفعل؟",
         "google": "جوجل",
-        "apple": "أبل"
+        "apple": "آبل"
     },
     "dashboard": {
         "greeting": "السلام عليكم،",
-        "tahfeezProgress": "تقدم التحفيظ",
-        "onTrack": "على المسار",
+        "tahfeezProgress": "نشاط التحفيظ",
+        "onTrack": "في المسار",
         "behind": "متأخر",
         "ahead": "متقدم",
         "currentGoal": "الهدف الحالي",
         "lastRecited": "آخر تلاوة:",
         "continue": "متابعة",
         "quickActions": "إجراءات سريعة",
-        "logPractice": "تسجيل التمرين",
-        "timetable": "الجدول",
-        "joinClass": "الانضمام للفصل",
+        "logPractice": "تسجيل التدريب",
+        "timetable": "الجدول الزمني",
+        "joinClass": "انضم للفصل",
         "qibla": "القبلة",
         "upcomingMuraja": "المراجعة القادمة",
         "viewAll": "عرض الكل",
         "assignments": "الواجبات",
-        "recentFeedback": "التغذية الراجعة الأخيرة",
+        "recentFeedback": "آخر التعليقات",
         "playAudioNote": "تشغيل الملاحظة الصوتية",
         "tomorrow": "غداً",
         "today": "اليوم",
-        "revisionDue": "موعد المراجعة"
+        "revisionDue": "المراجعة مستحقة قبل"
     },
     "surah": {
         "juz": "جزء",
-        "ayah": "آية"
+        "ayah": "آية",
+        "verses": "آيات",
+        "meccan": "مكية",
+        "madinan": "مدنية",
+        "surah": "سورة",
+        "page": "صفحة",
+        "bookmark": "إشارة مرجعية"
+    },
+    "quran": {
+        "title": "القرآن الكريم",
+        "subtitle": "استمر في تلاوتك",
+        "continueReading": "مواصلة القراءة",
+        "searchPlaceholder": "ابحث عن سورة، جزء أو آية...",
+        "murajaToday": "مراجعة اليوم",
+        "due": "مستحق",
+        "onTrack": "في المسار",
+        "completed": "مكتمل",
+        "inProgress": "قيد التنفيذ",
+        "notStarted": "لم يبدأ",
+        "noBookmarksYet": "لا توجد إشارات مرجعية بعد",
+        "noBookmarksHint": "اضغط على أيقونة الإشارة المرجعية في أي سورة لحفظها هنا للوصول السريع."
+    },
+    "quranSettings": {
+        "title": "إعدادات القرآن",
+        "arabicFontSize": "حجم الخط العربي",
+        "reciter": "القاريء",
+        "showTranslation": "إظهار الترجمة",
+        "translationLanguage": "لغة الترجمة",
+        "readingMode": "وضع القراءة",
+        "pageByPage": "صفحة صفحة",
+        "continuous": "مستمر"
+    },
+    "recording": {
+        "getReady": "استعد...",
+        "recordingWillStartIn": "سيبدأ التسجيل خلال {{seconds}} ثوانٍ",
+        "recording": "جاري التسجيل...",
+        "stopRecording": "إيقاف التسجيل",
+        "recordingComplete": "اكتمل التسجيل!",
+        "duration": "المدة",
+        "saveRecording": "حفظ التسجيل",
+        "micAccessDenied": "تم رفض الوصول إلى الميكروفون. يرجى السماح بالوصول للتسجيل.",
+        "noMicFound": "لم يتم العثور على ميكروفون. يرجى توصيل الميكروفون.",
+        "failed": "فشل التسجيل"
+    },
+    "logPractice": {
+        "title": "تسجيل التدريب",
+        "today": "اليوم",
+        "streak": "التواصل",
+        "memorization": "الحفظ",
+        "revision": "المراجعة",
+        "recitation": "التلاوة",
+        "recentSessions": "الجلسات الأخيرة",
+        "recordedAudioPractice": "تدريب صوتي مسجل",
+        "lastRecording": "آخر تسجيل:"
+    },
+    "profile": {
+        "title": "ملفي الشخصي",
+        "fullName": "الاسم الكامل",
+        "dateOfBirth": "تاريخ الميلاد",
+        "guardianContact": "جهة اتصال الولي",
+        "attendance": "الحضور",
+        "juz": "الجزء",
+        "grade": "الدرجة",
+        "personalInfo": "المعلومات الشخصية",
+        "academics": "الأكاديميا",
+        "academicReports": "التقارير الأكاديمية",
+        "attendanceHistory": "سجل الحضور",
+        "appSettings": "إعدادات التطبيق",
+        "language": "اللغة",
+        "notifications": "الإشعارات",
+        "darkMode": "الوضع الداكن",
+        "signOut": "تسجيل الخروج",
+        "selectLanguage": "اختر اللغة"
     },
     "footer": {
-        "version": "تطبيق مكتب للتحفيظ والإسلامية الإصدار 1.0"
+        "version": "تطبيق مكتب للتحفيظ والإسلامية v1.0"
+    },
+    "notifications": {
+        "title": "الإشعارات",
+        "unreadCount": "لديك إشعار {{count}} غير مقروء",
+        "unreadCount_plural": "لديك {{count}} إشعارات غير مقروءة",
+        "noNotifications": "لا توجد إشعارات",
+        "emptyHint": "أنت على اطلاع بكل شيء! تحقق لاحقاً.",
+        "markAllAsRead": "تحديد الكل كمقروء"
+    },
+    "timetable": {
+        "title": "الجدول الزمني",
+        "today": "اليوم",
+        "noClasses": "لا توجد دروس",
+        "noClassesHint": "ليس لديك أي دروس مجدولة لهذا اليوم.",
+        "sun": "الأحد",
+        "mon": "الإثنين",
+        "tue": "الثلاثاء",
+        "wed": "الأربعاء",
+        "thu": "الخميس",
+        "fri": "الجمعة",
+        "sat": "السبت",
+        "sunday": "الأحد",
+        "monday": "الإثنين",
+        "tuesday": "الثلاثاء",
+        "wednesday": "الأربعاء",
+        "thursday": "الخميس",
+        "friday": "الجمعة",
+        "saturday": "السبت"
     }
 }

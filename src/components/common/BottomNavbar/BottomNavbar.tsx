@@ -1,4 +1,5 @@
 import React from 'react';
+// import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, BookOpen, Calendar, User, Plus, LucideIcon } from 'lucide-react';
 import './BottomNavbar.css';
@@ -13,6 +14,7 @@ interface NavItem {
 const BottomNavbar: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    // const { t } = useTranslation();
 
     const navItems: NavItem[] = [
         { id: 'home', icon: Home, label: 'Home', route: '/dashboard' },

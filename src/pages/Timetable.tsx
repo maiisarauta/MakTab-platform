@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, MapPin, User } from 'lucide-react';
 import Card from '../components/common/Card';
@@ -10,8 +11,17 @@ type DayType = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'fri
 
 const Timetable: React.FC = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayLabels = [
+        t('timetable.sun'),
+        t('timetable.mon'),
+        t('timetable.tue'),
+        t('timetable.wed'),
+        t('timetable.thu'),
+        t('timetable.fri'),
+        t('timetable.sat')
+    ];
 
     const today = days[new Date().getDay()] as DayType;
     const [selectedDay, setSelectedDay] = useState<DayType>(today);
@@ -25,7 +35,7 @@ const Timetable: React.FC = () => {
                 <button className="back-btn" onClick={() => navigate(-1)}>
                     <ArrowLeft size={22} />
                 </button>
-                <h1 className="header-title">Timetable</h1>
+                <h1 className="header-title">{t('timetable.title')}</h1>
                 <div className="header-spacer" />
             </header>
 
@@ -48,8 +58,8 @@ const Timetable: React.FC = () => {
             {/* Schedule Content */}
             <main className="timetable-content">
                 <h2 className="day-title">
-                    {dayLabels[days.indexOf(selectedDay)]}day
-                    {selectedDay === today && <span className="today-badge">Today</span>}
+                    {t(`timetable.${selectedDay}`)}
+                    {selectedDay === today && <span className="today-badge">{t('timetable.today')}</span>}
                 </h2>
 
                 {todaySchedule.length > 0 ? (
@@ -90,8 +100,8 @@ const Timetable: React.FC = () => {
                 ) : (
                     <div className="empty-state">
                         <div className="empty-icon">📚</div>
-                        <h3 className="empty-title">No Classes</h3>
-                        <p className="empty-text">You don't have any classes scheduled for this day.</p>
+                        <h3 className="empty-title">{t('timetable.noClasses')}</h3>
+                        <p className="empty-text">{t('timetable.noClassesHint')}</p>
                     </div>
                 )}
             </main>

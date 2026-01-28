@@ -16,8 +16,8 @@ const InstallPrompt: React.FC = () => {
         const dismissed = localStorage.getItem('pwa-install-dismissed');
         if (dismissed) {
             const dismissedTime = parseInt(dismissed, 10);
-            // Show again after 7 days
-            if (Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
+            // Show again after 24 hours
+            if (Date.now() - dismissedTime < 24 * 60 * 60 * 1000) {
                 return;
             }
         }

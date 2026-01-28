@@ -1,0 +1,330 @@
+.recording-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.recording-popup {
+    background: var(--gradient-card);
+    background-color: var(--color-gray-50);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    width: 90%;
+    max-width: 360px;
+    text-align: center;
+    position: relative;
+    animation: slideUp 0.3s ease-out;
+    box-shadow: var(--shadow-xl);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.popup-close-btn {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-gray-100);
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--color-gray-500);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.popup-close-btn:hover {
+    background: var(--color-gray-200);
+    color: var(--color-gray-700);
+}
+
+/* Countdown State */
+.countdown-container {
+    padding: var(--space-4) 0;
+}
+
+.countdown-ring {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    border-radius: var(--radius-full);
+    position: relative;
+}
+
+.countdown-ring::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    background: var(--color-gray-50);
+    border-radius: var(--radius-full);
+}
+
+.countdown-number {
+    font-size: 64px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    position: relative;
+    z-index: 1;
+    animation: countdownPulse 1s ease-in-out;
+}
+
+@keyframes countdownPulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.countdown-text {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+    margin-bottom: var(--space-2);
+}
+
+.countdown-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* Recording State */
+.recording-container {
+    padding: var(--space-4) 0;
+}
+
+.recording-indicator {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-error);
+    border-radius: var(--radius-full);
+    position: relative;
+}
+
+.recording-pulse {
+    position: absolute;
+    inset: 0;
+    background: var(--color-error);
+    border-radius: var(--radius-full);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+
+.recording-icon {
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+.recording-status {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-error);
+    margin-bottom: var(--space-2);
+}
+
+.recording-timer {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-800);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: var(--space-6);
+}
+
+.stop-recording-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-4);
+    background: var(--color-gray-800);
+    border: none;
+    border-radius: var(--radius-xl);
+    color: white;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.stop-recording-btn:hover {
+    background: var(--color-gray-900);
+}
+
+/* Complete State */
+.complete-container {
+    padding: var(--space-4) 0;
+}
+
+.complete-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-success);
+    border-radius: var(--radius-full);
+    font-size: 36px;
+    color: white;
+    animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.complete-text {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+    margin-bottom: var(--space-2);
+}
+
+.complete-duration {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    margin-bottom: var(--space-6);
+}
+
+.complete-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.action-btn {
+    flex: 1;
+    padding: var(--space-3) var(--space-4);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.action-btn.primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.action-btn.secondary {
+    background: var(--color-gray-200);
+    color: var(--color-gray-700);
+}
+
+.action-btn.secondary:hover {
+    background: var(--color-gray-300);
+}
+
+/* Error State */
+.error-container {
+    padding: var(--space-4) 0;
+}
+
+.error-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-error);
+    border-radius: var(--radius-full);
+    font-size: 36px;
+    font-weight: var(--font-weight-bold);
+    color: white;
+}
+
+.error-text {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-6);
+    line-height: var(--line-height-relaxed);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .recording-popup {
+    background: var(--color-gray-100);
+    border: 1px solid var(--color-gray-200);
+}
+
+[data-theme="dark"] .countdown-ring::before {
+    background: var(--color-gray-100);
+}
+
+[data-theme="dark"] .popup-close-btn {
+    background: var(--color-gray-200);
+}
