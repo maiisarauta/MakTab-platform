@@ -25,8 +25,8 @@ import {
     fetchJuzWithTranslation,
     fetchSurahWithAudio,
     combineWithTranslation,
-    RECITERS,
-    EDITIONS,
+    // RECITERS,
+    // EDITIONS,
     type Ayah,
     type SurahData,
 } from '../services/quranApi';
