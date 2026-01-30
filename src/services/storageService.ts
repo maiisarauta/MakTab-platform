@@ -13,6 +13,7 @@ export const STORAGE_KEYS = {
     // Audio & Recordings
     RECORDINGS: 'maktab_recordings',
     FEEDBACK_AUDIO: 'maktab_feedback_audio',
+    AUDIO_ENABLED: 'maktab_audio_enabled', // Persistent audio session
 
     // Practice & Progress
     PRACTICE_LOGS: 'maktab_practice_logs',
@@ -22,6 +23,8 @@ export const STORAGE_KEYS = {
     QURAN_SETTINGS: 'maktab_quran_settings',
     BOOKMARKS: 'maktab_bookmarks',
     LAST_READ: 'maktab_last_read',
+    QURAN_TEXT_CACHE: 'maktab_quran_text_cache', // Offline text cache
+    DOWNLOADED_AUDIO: 'maktab_downloaded_audio', // Track downloaded audio
 
     // Notifications
     NOTIFICATIONS: 'maktab_notifications',
@@ -229,9 +232,9 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
 };
 
 export const DEFAULT_QURAN_SETTINGS: QuranSettings = {
-    fontSize: 24,
+    fontSize: 28,
     reciter: 'mishary-rashid',
-    showTranslation: true,
+    showTranslation: false,
     translationLanguage: 'en',
     readingMode: 'page',
 };

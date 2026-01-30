@@ -18,26 +18,21 @@ import {
     Loader2,
     List,
     Globe,
+    Download,
 } from 'lucide-react';
 import {
-    fetchSurahWithTranslation,
-    fetchPageWithTranslation,
-    fetchJuzWithTranslation,
-    fetchSurahWithAudio,
-    combineWithTranslation,
-    // RECITERS,
-    // EDITIONS,
-    type Ayah,
-    type SurahData,
+    fetchPageDataOfflineFirst,
+    fetchPageAudioOfflineFirst,
+    getChapterStartPage,
+    getJuzStartPage,
+    getReciterId,
+    type Verse,
+    type Word,
+    type QuranPageData,
 } from '../services/quranApi';
 import { storage, STORAGE_KEYS, type Bookmark as BookmarkType, type QuranSettings, DEFAULT_QURAN_SETTINGS } from '../services/storageService';
+import { PageDownloadManager } from '../components/PageDownloadManager';
 import './QuranReader.css';
-
-type ViewMode = 'surah' | 'page' | 'juz';
-
-interface AyahWithTranslation extends Ayah {
-    translation: string;
-}
 
 // Arabic numeral mapping
 const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -45,86 +40,102 @@ const toArabicNumerals = (num: number): string => {
     return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
 };
 
-// Bismillah text patterns - all known variations from the API
-const BISMILLAH_PATTERNS = [
-    // Standard with hamza above alif
-    'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-    // With hamza wasl (alif with wasla) - most common from alquran.cloud
-    'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
-    // With small high meem
-    'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ',
-    // Plain without diacritics
-    'بسم الله الرحمن الرحيم',
-    // Another common variation
-    'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ ٱلرَّحِيمِ'
-];
-
-// Map translation language to API edition
-const getTranslationEdition = (lang: string): string => {
-    switch (lang) {
-        case 'ha': return 'ha.gumi';
-        case 'en':
-        default: return 'en.asad';
-    }
-};
-
-// Map reciter to API identifier
-const getReciterEdition = (reciter: string): string => {
-    switch (reciter) {
-        case 'mishary-rashid': return 'ar.alafasy';
-        case 'abdul-basit': return 'ar.abdulbasitmurattal';
-        case 'sudais': return 'ar.abdurrahmaansudais';
-        case 'ghamdi': return 'ar.ghamadi';
-        case 'minshawi': return 'ar.minshawi';
-        default: return 'ar.alafasy';
-    }
-};
+// Total pages in the Mushaf
+const TOTAL_PAGES = 604;
 
 const QuranReader: React.FC = () => {
-    const { surahNumber, pageNumber, juzNumber } = useParams();
+    const { surahNumber, pageNumber: urlPageNumber, juzNumber } = useParams();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
 
-    // Determine view mode and reference
-    const viewMode: ViewMode = surahNumber ? 'surah' : pageNumber ? 'page' : 'juz';
-    const reference = parseInt(surahNumber || pageNumber || juzNumber || '1');
-
     // State
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [ayahs, setAyahs] = useState<AyahWithTranslation[]>([]);
-    const [surahInfo, setSurahInfo] = useState<Partial<SurahData> | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageData, setPageData] = useState<QuranPageData | null>(null);
     const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
 
-    // Settings State (Initialized from storage with smart defaults)
+    // Settings State
     const [settings, setSettings] = useState<QuranSettings>(() => {
         const saved = storage.get<QuranSettings | null>(STORAGE_KEYS.QURAN_SETTINGS, null);
         if (saved) return saved;
 
-        // Default translation based on app language
         const appLang = i18n.language.startsWith('ha') ? 'ha' : 'en';
         return {
             ...DEFAULT_QURAN_SETTINGS,
             translationLanguage: appLang as 'en' | 'ha',
-            fontSize: 28 // Default for reader
+            fontSize: 28
         };
     });
-    const [audioEnabled, setAudioEnabled] = useState(true); // Temporary session state or add to QuranSettings
+    const [audioEnabled, setAudioEnabled] = useState(() => {
+        // Load audio state from localStorage for session persistence
+        return localStorage.getItem('maktab_audio_enabled') === 'true';
+    });
     const [showSettings, setShowSettings] = useState(false);
+    const [showDownloadManager, setShowDownloadManager] = useState(false);
 
-    // Derived values from settings for easier usage
+    // Persist audio enabled state to localStorage
+    useEffect(() => {
+        localStorage.setItem('maktab_audio_enabled', audioEnabled.toString());
+    }, [audioEnabled]);
+
     const { fontSize, showTranslation, translationLanguage: translationLang, reciter } = settings;
 
     // Audio state
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentAyahIndex, setCurrentAyahIndex] = useState(0);
-    const [audioUrls, setAudioUrls] = useState<string[]>([]);
+    const [audioUrls, setAudioUrls] = useState<{ verseKey: string; audioUrl: string }[]>([]);
     const [isMuted, setIsMuted] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
-    // Should auto-play on mount
     const autoPlay = searchParams.get('autoplay') === 'true';
+
+    // Group words by line for traditional Mushaf view
+    const wordsByLine = React.useMemo(() => {
+        if (!pageData) return {};
+
+        const grouped: { [line: number]: (Word & { verseKey: string; ayahIndex: number })[] } = {};
+
+        pageData.verses.forEach((verse, ayahIndex) => {
+            if (verse.words) {
+                verse.words.forEach(word => {
+                    const lineNum = word.line_number;
+                    if (!grouped[lineNum]) {
+                        grouped[lineNum] = [];
+                    }
+                    grouped[lineNum].push({ ...word, verseKey: verse.verse_key, ayahIndex });
+                });
+            }
+        });
+
+        return grouped;
+    }, [pageData]);
+
+    // Determine initial page based on URL params
+    useEffect(() => {
+        const initializePage = async () => {
+            setLoading(true);
+            try {
+                let startPage = 1;
+
+                if (urlPageNumber) {
+                    startPage = parseInt(urlPageNumber);
+                } else if (surahNumber) {
+                    startPage = await getChapterStartPage(parseInt(surahNumber));
+                } else if (juzNumber) {
+                    startPage = getJuzStartPage(parseInt(juzNumber));
+                }
+
+                setCurrentPage(Math.max(1, Math.min(startPage, TOTAL_PAGES)));
+            } catch (err) {
+                console.error('Failed to initialize page:', err);
+                setCurrentPage(1);
+            }
+        };
+
+        initializePage();
+    }, [surahNumber, urlPageNumber, juzNumber]);
 
     // Load bookmarks
     useEffect(() => {
@@ -132,44 +143,83 @@ const QuranReader: React.FC = () => {
         setBookmarks(saved);
     }, []);
 
-    // Fetch content based on view mode
+    // Fetch page content when currentPage changes
     useEffect(() => {
         const fetchContent = async () => {
             setLoading(true);
             setError(null);
 
             try {
-                if (viewMode === 'surah') {
-                    const translationEdition = getTranslationEdition(translationLang);
-                    const { arabic, translation } = await fetchSurahWithTranslation(reference, translationEdition);
-                    setSurahInfo(arabic);
-                    setAyahs(combineWithTranslation(arabic.ayahs, translation.ayahs));
+                // Use offline-first functions to check cache before API
+                const data = await fetchPageDataOfflineFirst(currentPage, translationLang);
+                setPageData(data);
 
-                    // Fetch audio URLs using correct reciter edition
-                    const reciterEdition = getReciterEdition(reciter);
-                    const audioData = await fetchSurahWithAudio(reference, reciterEdition);
-                    setAudioUrls(audioData.ayahs.map(a => a.audio || '').filter(Boolean));
-                } else if (viewMode === 'page') {
-                    const translationEdition = getTranslationEdition(translationLang);
-                    const { arabic, translation } = await fetchPageWithTranslation(reference, translationEdition);
-                    setSurahInfo({ name: `Page ${reference}`, englishName: `Page ${reference}` });
-                    setAyahs(combineWithTranslation(arabic.ayahs, translation.ayahs));
-                } else if (viewMode === 'juz') {
-                    const translationEdition = getTranslationEdition(translationLang);
-                    const { arabic, translation } = await fetchJuzWithTranslation(reference, translationEdition);
-                    setSurahInfo({ name: `Juz ${reference}`, englishName: `Juz' ${reference}` });
-                    setAyahs(combineWithTranslation(arabic.ayahs, translation.ayahs));
+                // Fetch audio if enabled (also offline-first)
+                if (audioEnabled) {
+                    const reciterId = getReciterId(reciter);
+                    const audio = await fetchPageAudioOfflineFirst(currentPage, reciterId);
+                    setAudioUrls(audio);
                 }
             } catch (err) {
-                console.error('Failed to fetch content:', err);
+                console.error('Failed to fetch page content:', err);
                 setError(t('quran.loadError') || 'Failed to load Quran content');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchContent();
-    }, [viewMode, reference, translationLang, reciter, t]);
+        if (currentPage > 0) {
+            fetchContent();
+        }
+    }, [currentPage, translationLang, audioEnabled, reciter, t]);
+
+    // Background pre-fetching for neighboring pages
+    useEffect(() => {
+        const prefetch = async () => {
+            // Wait a bit before prefetching to avoid competing with main fetch
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            const pagesToPrefetch = [];
+            if (currentPage < TOTAL_PAGES) pagesToPrefetch.push(currentPage + 1);
+            if (currentPage > 1) pagesToPrefetch.push(currentPage - 1);
+
+            for (const page of pagesToPrefetch) {
+                try {
+                    // This will fetch and cache silently
+                    await fetchPageDataOfflineFirst(page, translationLang);
+                } catch (err) {
+                    // Ignore prefetch errors
+                }
+            }
+        };
+
+        if (!loading && currentPage > 0) {
+            prefetch();
+        }
+    }, [currentPage, translationLang, loading]);
+
+    // Fetch audio when audioEnabled changes
+    useEffect(() => {
+        const fetchAudio = async () => {
+            console.log('Audio effect triggered:', { audioEnabled, currentPage, reciter });
+            if (audioEnabled && currentPage > 0) {
+                try {
+                    console.log('Fetching audio for page:', currentPage);
+                    const reciterId = getReciterId(reciter);
+                    console.log('Reciter ID:', reciterId);
+                    // Use offline-first to check cache before API
+                    const audio = await fetchPageAudioOfflineFirst(currentPage, reciterId);
+                    console.log('Audio fetched:', audio.length, 'files');
+                    setAudioUrls(audio);
+                } catch (err) {
+                    console.error('Failed to fetch audio:', err);
+                    setAudioUrls([]); // Set empty array on error
+                }
+            }
+        };
+
+        fetchAudio();
+    }, [audioEnabled, reciter, currentPage]);
 
     // Auto-play if requested
     useEffect(() => {
@@ -182,7 +232,7 @@ const QuranReader: React.FC = () => {
     // Audio playback handlers
     const handlePlay = useCallback(() => {
         if (audioRef.current && audioUrls[currentAyahIndex]) {
-            audioRef.current.src = audioUrls[currentAyahIndex];
+            audioRef.current.src = audioUrls[currentAyahIndex].audioUrl;
             audioRef.current.play().catch(err => {
                 console.error('Audio playback failed:', err);
             });
@@ -204,10 +254,10 @@ const QuranReader: React.FC = () => {
     };
 
     const handleNextAyah = () => {
-        if (currentAyahIndex < ayahs.length - 1) {
+        if (currentAyahIndex < audioUrls.length - 1) {
             setCurrentAyahIndex(prev => prev + 1);
             if (isPlaying && audioRef.current) {
-                audioRef.current.src = audioUrls[currentAyahIndex + 1];
+                audioRef.current.src = audioUrls[currentAyahIndex + 1].audioUrl;
                 audioRef.current.play();
             }
         }
@@ -217,14 +267,14 @@ const QuranReader: React.FC = () => {
         if (currentAyahIndex > 0) {
             setCurrentAyahIndex(prev => prev - 1);
             if (isPlaying && audioRef.current) {
-                audioRef.current.src = audioUrls[currentAyahIndex - 1];
+                audioRef.current.src = audioUrls[currentAyahIndex - 1].audioUrl;
                 audioRef.current.play();
             }
         }
     };
 
     const handleAudioEnded = () => {
-        if (currentAyahIndex < ayahs.length - 1) {
+        if (currentAyahIndex < audioUrls.length - 1) {
             handleNextAyah();
         } else {
             setIsPlaying(false);
@@ -232,30 +282,32 @@ const QuranReader: React.FC = () => {
         }
     };
 
-    // Navigation
+    // Page Navigation
     const handleBack = () => navigate('/quran');
 
     const handlePrevPage = () => {
-        if (viewMode === 'surah' && reference > 1) {
-            navigate(`/quran/surah/${reference - 1}`);
-        } else if (viewMode === 'page' && reference > 1) {
-            navigate(`/quran/page/${reference - 1}`);
-        } else if (viewMode === 'juz' && reference > 1) {
-            navigate(`/quran/juz/${reference - 1}`);
+        if (currentPage > 1) {
+            setCurrentPage(prev => prev - 1);
+            setCurrentAyahIndex(0);
+            navigate(`/quran/page/${currentPage - 1}`, { replace: true });
         }
     };
 
     const handleNextPage = () => {
-        const maxRef = viewMode === 'surah' ? 114 : viewMode === 'page' ? 604 : 30;
-        if (reference < maxRef) {
-            navigate(`/quran/${viewMode}/${reference + 1}`);
+        if (currentPage < TOTAL_PAGES) {
+            setCurrentPage(prev => prev + 1);
+            setCurrentAyahIndex(0);
+            navigate(`/quran/page/${currentPage + 1}`, { replace: true });
         }
     };
 
     // Bookmark toggle
-    const toggleBookmark = (ayah: AyahWithTranslation, surahNum: number) => {
+    const toggleBookmark = (verse: Verse) => {
+        const [surahNum, ayahNum] = verse.verse_key.split(':').map(Number);
+        const chapterInfo = pageData?.chapters.find(c => c.id === surahNum);
+
         const existing = bookmarks.find(
-            b => b.surahNumber === surahNum && b.ayahNumber === ayah.numberInSurah
+            b => b.surahNumber === surahNum && b.ayahNumber === ayahNum
         );
 
         let newBookmarks: BookmarkType[];
@@ -265,8 +317,8 @@ const QuranReader: React.FC = () => {
             const newBm: BookmarkType = {
                 id: `bm-${Date.now()}`,
                 surahNumber: surahNum,
-                surahName: surahInfo?.englishName || `Surah ${surahNum}`,
-                ayahNumber: ayah.numberInSurah,
+                surahName: chapterInfo?.name || `Surah ${surahNum}`,
+                ayahNumber: ayahNum,
                 createdAt: new Date().toISOString(),
             };
             newBookmarks = [...bookmarks, newBm];
@@ -276,7 +328,8 @@ const QuranReader: React.FC = () => {
         storage.set(STORAGE_KEYS.BOOKMARKS, newBookmarks);
     };
 
-    const isAyahBookmarked = (surahNum: number, ayahNum: number) => {
+    const isVerseBookmarked = (verseKey: string) => {
+        const [surahNum, ayahNum] = verseKey.split(':').map(Number);
         return bookmarks.some(b => b.surahNumber === surahNum && b.ayahNumber === ayahNum);
     };
 
@@ -295,9 +348,11 @@ const QuranReader: React.FC = () => {
 
     // Click on ayah to play
     const handleAyahClick = (index: number) => {
+        if (!audioEnabled) return;
+
         setCurrentAyahIndex(index);
         if (audioUrls[index] && audioRef.current) {
-            audioRef.current.src = audioUrls[index];
+            audioRef.current.src = audioUrls[index].audioUrl;
             audioRef.current.play().catch(err => {
                 console.error('Audio playback failed:', err);
             });
@@ -306,21 +361,31 @@ const QuranReader: React.FC = () => {
     };
 
     // Helper to format ayah number based on language
-    const formatAyahNumber = (num: number): string => {
+    const formatNumber = (num: number): string => {
         return i18n.language === 'ar' ? toArabicNumerals(num) : num.toString();
     };
 
-    // Helper to clean Bismillah from first ayah text
-    const cleanAyahText = (text: string, index: number, surahNum: number): string => {
-        // Only clean first ayah of surahs that show Bismillah separately
-        if (index === 0 && surahNum !== 1 && surahNum !== 9 && viewMode === 'surah') {
-            let cleanedText = text;
-            for (const pattern of BISMILLAH_PATTERNS) {
-                cleanedText = cleanedText.replace(pattern, '').trim();
-            }
-            return cleanedText;
+    // Get header title
+    const getHeaderTitle = () => {
+        if (!pageData || pageData.chapters.length === 0) {
+            return `Page ${currentPage}`;
         }
-        return text;
+
+        if (pageData.chapters.length === 1) {
+            return pageData.chapters[0].name;
+        }
+
+        return pageData.chapters.map(c => c.name).join(' / ');
+    };
+
+    const getHeaderArabicTitle = () => {
+        if (!pageData || pageData.chapters.length === 0) return '';
+
+        if (pageData.chapters.length === 1) {
+            return pageData.chapters[0].nameArabic;
+        }
+
+        return pageData.chapters.map(c => c.nameArabic).join(' / ');
     };
 
     if (loading) {
@@ -362,17 +427,27 @@ const QuranReader: React.FC = () => {
                     <ArrowLeft size={24} />
                 </button>
                 <div className="header-info">
-                    <h1 className="surah-title">{surahInfo?.englishName || surahInfo?.name}</h1>
-                    {surahInfo?.name && surahInfo.name !== surahInfo.englishName && (
-                        <p className="surah-arabic-title">{surahInfo.name}</p>
-                    )}
+                    <h1 className="surah-title">{getHeaderTitle()}</h1>
+                    <p className="surah-arabic-title">{getHeaderArabicTitle()}</p>
+                    <p className="page-info">
+                        {t('surah.page') || 'Page'} {formatNumber(currentPage)} • {t('surah.juz') || 'Juz'} {formatNumber(pageData?.juzNumber || 1)}
+                    </p>
                 </div>
-                <button className="settings-btn" onClick={() => setShowSettings(!showSettings)}>
-                    <Settings size={22} />
-                </button>
+                <div className="header-actions">
+                    <button
+                        className="download-audio-btn"
+                        onClick={() => setShowDownloadManager(true)}
+                        title="Download Audio for Offline"
+                    >
+                        <Download size={22} />
+                    </button>
+                    <button className="settings-btn" onClick={() => setShowSettings(!showSettings)}>
+                        <Settings size={22} />
+                    </button>
+                </div>
             </header>
 
-            {/* Settings Panel - Fixed Modal Overlay */}
+            {/* Settings Panel */}
             {showSettings && (
                 <div className="settings-overlay" onClick={() => setShowSettings(false)}>
                     <div className="settings-panel" onClick={(e) => e.stopPropagation()}>
@@ -452,8 +527,8 @@ const QuranReader: React.FC = () => {
                                     <option value="mishary-rashid">Mishary Rashid</option>
                                     <option value="abdul-basit">Abdul Basit</option>
                                     <option value="sudais">Al-Sudais</option>
-                                    <option value="ghamdi">Al-Ghamdi</option>
                                     <option value="minshawi">Al-Minshawi</option>
+                                    <option value="husary">Al-Husary</option>
                                 </select>
                             </div>
                         )}
@@ -461,63 +536,107 @@ const QuranReader: React.FC = () => {
                 </div>
             )}
 
-            {/* Ayah Content */}
+            {/* Page Content */}
             <main className={`reader-content ${!showTranslation ? 'traditional-mode' : ''} ${!audioEnabled ? 'no-audio' : ''}`}>
-                {/* Bismillah for surah view (except Surah 1 and 9) */}
-                {viewMode === 'surah' && reference !== 1 && reference !== 9 && (
-                    <div className="bismillah">
-                        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                    </div>
-                )}
-
-                {/* Traditional Quran Layout - When Translation is OFF */}
+                {/* Traditional Quran Layout - Like reading from a real Mushaf */}
                 {!showTranslation ? (
                     <div className="traditional-quran-text" style={{ fontSize: `${fontSize}px` }}>
-                        {ayahs.map((ayah, index) => (
-                            <span
-                                key={`${ayah.number}-${index}`}
-                                className={`traditional-ayah ${index === currentAyahIndex && isPlaying ? 'playing' : ''}`}
-                                onClick={() => audioEnabled && handleAyahClick(index)}
-                            >
-                                {cleanAyahText(ayah.text, index, reference)}
-                                <span className="verse-marker">﴿{formatAyahNumber(ayah.numberInSurah)}﴾</span>
-                            </span>
-                        ))}
+                        {Object.keys(wordsByLine).sort((a, b) => Number(a) - Number(b)).map((lineNum) => {
+                            const lineWords = wordsByLine[Number(lineNum)];
+                            const firstWord = lineWords[0];
+                            const [surahNum, ayahNum] = firstWord.verseKey.split(':').map(Number);
+                            const isFirstAyahOfSurah = ayahNum === 1 && firstWord.position === 1;
+
+                            return (
+                                <React.Fragment key={lineNum}>
+                                    {isFirstAyahOfSurah && (
+                                        <div className="surah-separator">
+                                            <img
+                                                src="/sura-frame.png"
+                                                alt="Surah Frame"
+                                                className="surah-frame"
+                                            />
+                                            <span className="surah-name-wrapper">
+                                                سورة {pageData?.chapters.find(c => c.id === surahNum)?.nameArabic}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {isFirstAyahOfSurah && surahNum !== 1 && surahNum !== 9 && (
+                                        <div className="bismillah-text">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+                                    )}
+                                    <div className="quran-line">
+                                        {lineWords.map((word, wIdx) => {
+                                            const currentlyPlaying = audioUrls[currentAyahIndex]?.verseKey === word.verseKey && isPlaying;
+                                            const isEndMarker = word.char_type_name === 'end';
+                                            const verseNum = word.verseKey.split(':')[1];
+
+                                            return (
+                                                <span
+                                                    key={`${word.id}-${wIdx}`}
+                                                    className={`quran-word ${isEndMarker ? 'ayah-marker' : ''} ${currentlyPlaying ? 'playing' : ''}`}
+                                                    onClick={() => handleAyahClick(word.ayahIndex)}
+                                                >
+                                                    {isEndMarker ? (
+                                                        <span className="verse-end-marker">﴿{toArabicNumerals(parseInt(verseNum))}﴾</span>
+                                                    ) : (
+                                                        word.text_qpc_hafs
+                                                    )}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                </React.Fragment>
+                            );
+                        })}
                     </div>
                 ) : (
                     /* Card Layout - When Translation is ON */
                     <div className="ayahs-container">
-                        {ayahs.map((ayah, index) => {
-                            const surahNum = ayah.numberInSurah ? (viewMode === 'surah' ? reference : ayah.juz) : reference;
-                            const isCurrentAyah = index === currentAyahIndex && isPlaying;
+                        {pageData?.verses.map((verse, index) => {
+                            const [surahNum, ayahNum] = verse.verse_key.split(':').map(Number);
+                            const isFirstAyah = ayahNum === 1;
+                            const currentlyPlaying = audioUrls[currentAyahIndex]?.verseKey === verse.verse_key && isPlaying;
+                            const translationText = verse.translations?.[0]?.text || '';
+                            const cleanTranslation = translationText.replace(/<[^>]*>/g, '');
 
                             return (
-                                <div
-                                    key={`${ayah.number}-${index}`}
-                                    className={`ayah-block ${isCurrentAyah ? 'playing' : ''}`}
-                                    onClick={() => audioEnabled && handleAyahClick(index)}
-                                >
-                                    <div className="ayah-header">
-                                        <span className="ayah-number">{formatAyahNumber(ayah.numberInSurah)}</span>
-                                        <button
-                                            className={`bookmark-icon ${isAyahBookmarked(surahNum, ayah.numberInSurah) ? 'active' : ''}`}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                toggleBookmark(ayah, surahNum);
-                                            }}
-                                        >
-                                            {isAyahBookmarked(surahNum, ayah.numberInSurah) ? (
-                                                <BookMarked size={18} />
-                                            ) : (
-                                                <Bookmark size={18} />
+                                <React.Fragment key={verse.verse_key}>
+                                    {isFirstAyah && (
+                                        <div className="surah-header-card">
+                                            <h2>{pageData.chapters.find(c => c.id === surahNum)?.name}</h2>
+                                            {surahNum !== 1 && surahNum !== 9 && (
+                                                <p className="bismillah-card">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
                                             )}
-                                        </button>
-                                    </div>
-                                    <p className="ayah-arabic" style={{ fontSize: `${fontSize}px` }}>{cleanAyahText(ayah.text, index, surahNum)}</p>
-                                    {ayah.translation && (
-                                        <p className="ayah-translation">{ayah.translation}</p>
+                                        </div>
                                     )}
-                                </div>
+                                    <div
+                                        className={`ayah-block ${currentlyPlaying ? 'playing' : ''}`}
+                                        onClick={() => handleAyahClick(index)}
+                                    >
+                                        <div className="ayah-header">
+                                            <span className="ayah-number">{verse.verse_key}</span>
+                                            <button
+                                                className={`bookmark-btn-small ${isVerseBookmarked(verse.verse_key) ? 'active' : ''}`}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleBookmark(verse);
+                                                }}
+                                            >
+                                                {isVerseBookmarked(verse.verse_key) ? (
+                                                    <BookMarked size={18} />
+                                                ) : (
+                                                    <Bookmark size={18} />
+                                                )}
+                                            </button>
+                                        </div>
+                                        <p className="ayah-arabic" style={{ fontSize: `${fontSize}px` }}>
+                                            {verse.text_qpc_hafs}
+                                        </p>
+                                        {cleanTranslation && (
+                                            <p className="ayah-translation">{cleanTranslation}</p>
+                                        )}
+                                    </div>
+                                </React.Fragment>
                             );
                         })}
                     </div>
@@ -531,7 +650,7 @@ const QuranReader: React.FC = () => {
                     <div className="player-ayah-info">
                         <List size={16} />
                         <span>
-                            {t('surah.ayah') || 'Ayah'} {formatAyahNumber(ayahs[currentAyahIndex]?.numberInSurah || 1)}
+                            {audioUrls.length > 0 ? audioUrls[currentAyahIndex]?.verseKey : 'Loading...'}
                         </span>
                     </div>
                 )}
@@ -539,54 +658,55 @@ const QuranReader: React.FC = () => {
                 {/* Audio Controls */}
                 {audioEnabled && (
                     <div className="player-controls">
-                        <button onClick={handlePrevAyah} disabled={currentAyahIndex === 0}>
+                        <button onClick={handlePrevAyah} disabled={currentAyahIndex === 0 || audioUrls.length === 0}>
                             <SkipBack size={20} />
                         </button>
-                        <button className="play-pause-btn" onClick={handlePlayPause}>
+                        <button className="play-pause-btn" onClick={handlePlayPause} disabled={audioUrls.length === 0}>
                             {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                         </button>
-                        <button onClick={handleNextAyah} disabled={currentAyahIndex >= ayahs.length - 1}>
+                        <button onClick={handleNextAyah} disabled={currentAyahIndex >= audioUrls.length - 1 || audioUrls.length === 0}>
                             <SkipForward size={20} />
                         </button>
                     </div>
                 )}
 
                 {/* Mute Button */}
-                {audioEnabled && (
+                {audioEnabled && audioUrls.length > 0 && (
                     <button className="mute-btn" onClick={() => setIsMuted(!isMuted)}>
                         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                     </button>
                 )}
 
-                {/* Navigation Controls */}
+                {/* Page Navigation Controls */}
                 <div className="nav-controls">
                     <button
                         onClick={handlePrevPage}
-                        disabled={reference <= 1}
+                        disabled={currentPage <= 1}
                         className="nav-btn"
-                        title={t('quran.previous') || 'Previous'}
+                        title={t('quran.previous') || 'Previous Page'}
                     >
                         <ChevronLeft size={22} />
                     </button>
                     <span className="nav-indicator">
-                        {viewMode === 'surah' && `${formatAyahNumber(reference)} / ${formatAyahNumber(114)}`}
-                        {viewMode === 'page' && `${formatAyahNumber(reference)} / ${formatAyahNumber(604)}`}
-                        {viewMode === 'juz' && `${formatAyahNumber(reference)} / ${formatAyahNumber(30)}`}
+                        {formatNumber(currentPage)} / {formatNumber(TOTAL_PAGES)}
                     </span>
                     <button
                         onClick={handleNextPage}
-                        disabled={
-                            (viewMode === 'surah' && reference >= 114) ||
-                            (viewMode === 'page' && reference >= 604) ||
-                            (viewMode === 'juz' && reference >= 30)
-                        }
+                        disabled={currentPage >= TOTAL_PAGES}
                         className="nav-btn"
-                        title={t('quran.next') || 'Next'}
+                        title={t('quran.next') || 'Next Page'}
                     >
                         <ChevronRight size={22} />
                     </button>
                 </div>
             </div>
+
+            {/* Page Download Manager Modal */}
+            <PageDownloadManager
+                isOpen={showDownloadManager}
+                onClose={() => setShowDownloadManager(false)}
+                chaptersOnPage={pageData?.chapters || []}
+            />
         </div>
     );
 };

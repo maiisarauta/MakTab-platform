@@ -49,9 +49,16 @@
     opacity: 0.8;
 }
 
-.settings-btn {
-    width: 40px;
-    height: 40px;
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.settings-btn,
+.quran-header .download-btn {
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -60,6 +67,12 @@
     border-radius: var(--radius-lg);
     color: var(--color-white);
     cursor: pointer;
+    transition: background 0.2s;
+}
+
+.settings-btn:hover,
+.quran-header .download-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /* Search Bar */

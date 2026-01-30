@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Play, Settings, Check, BookMarked, Bookmark } from 'lucide-react';
+import { Search, Play, Settings, Check, BookMarked, Bookmark, Loader2, Download } from 'lucide-react';
 import Card from '../components/common/Card';
 import BottomNavbar from '../components/common/BottomNavbar';
 import QuranSettingsModal from '../components/QuranSettings/QuranSettings';
+import { DownloadManager } from '../components/DownloadManager';
 import { storage, STORAGE_KEYS, Bookmark as BookmarkType } from '../services/storageService';
+import { fetchAllSurahs, fetchAllJuzs } from '../services/quranApi';
 import { userProfile } from '../data/studentData';
 import './Quran.css';
 
@@ -33,6 +35,7 @@ const Quran: React.FC = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<TabType>('surah');
     const [showSettings, setShowSettings] = useState(false);
+    const [showDownloadManager, setShowDownloadManager] = useState(false);
     const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const { t } = useTranslation();
@@ -54,7 +57,7 @@ const Quran: React.FC = () => {
 
     // Navigation handlers
     const handlePlayCurrentSurah = () => {
-        navigate(`/quran/surah/${currentProgress.surahNumber}?autoplay=true`);
+        navigate(`/quran/surah/${currentProgress.surahNumber}?autoplay=false`);
     };
 
     const handleViewAllCurrentSurah = () => {
@@ -78,30 +81,61 @@ const Quran: React.FC = () => {
         { id: '2', status: 'on-track', juz: 28, pages: 5 },
     ];
 
-    const surahs: Surah[] = [
-        { number: 1, name: 'Al-Fatiha', arabicName: 'الفاتحة', translation: 'The Opening', verses: 7, type: 'Meccan', status: 'completed' },
-        { number: 2, name: 'Al-Baqarah', arabicName: 'البقرة', translation: 'The Cow', verses: 286, type: 'Madinan', status: 'in-progress' },
-        { number: 3, name: 'Aali Imran', arabicName: 'آل عمران', translation: 'Family of Imran', verses: 200, type: 'Madinan', status: 'not-started' },
-        { number: 4, name: 'An-Nisa', arabicName: 'النساء', translation: 'The Women', verses: 176, type: 'Madinan', status: 'not-started' },
-        { number: 5, name: 'Al-Ma\'idah', arabicName: 'المائدة', translation: 'The Table Spread', verses: 120, type: 'Madinan', status: 'not-started' },
-        { number: 6, name: 'Al-An\'am', arabicName: 'الأنعام', translation: 'The Cattle', verses: 165, type: 'Meccan', status: 'not-started' },
-    ];
+    const [surahs, setSurahs] = useState<Surah[]>([]);
+    const [juzList, setJuzList] = useState<JuzInfo[]>([]);
+    const [pages, setPages] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const juzList: JuzInfo[] = [
-        { number: 1, startSurah: 'Al-Fatiha', endSurah: 'Al-Baqarah (141)', pages: 20, status: 'completed' },
-        { number: 2, startSurah: 'Al-Baqarah (142)', endSurah: 'Al-Baqarah (252)', pages: 20, status: 'completed' },
-        { number: 3, startSurah: 'Al-Baqarah (253)', endSurah: 'Ali Imran (92)', pages: 20, status: 'in-progress' },
-        { number: 4, startSurah: 'Ali Imran (93)', endSurah: 'An-Nisa (23)', pages: 20, status: 'not-started' },
-        { number: 5, startSurah: 'An-Nisa (24)', endSurah: 'An-Nisa (147)', pages: 20, status: 'not-started' },
-        { number: 6, startSurah: 'An-Nisa (148)', endSurah: 'Al-Ma\'idah (81)', pages: 20, status: 'not-started' },
-    ];
+    // Load initial data
+    useEffect(() => {
+        const loadData = async () => {
+            setLoading(true);
+            try {
+                const [chaptersData, juzsData] = await Promise.all([
+                    fetchAllSurahs(), // Real API call
+                    fetchAllJuzs(),   // Real API call
+                ]);
 
-    const pages = Array.from({ length: 30 }, (_, i) => ({
-        number: i + 1,
-        surah: surahs[Math.min(i % 6, 5)].name,
-        ayahStart: (i * 10) + 1,
-        ayahEnd: (i + 1) * 10,
-    }));
+                // Map API chapters to Surah interface
+                const mappedSurahs: Surah[] = chaptersData.map(s => ({
+                    number: s.number,
+                    name: s.englishName,
+                    arabicName: s.name,
+                    translation: s.englishNameTranslation,
+                    verses: s.numberOfAyahs,
+                    type: s.revelationType === 'Meccan' ? 'Meccan' : 'Madinan',
+                    status: 'not-started' // Default status
+                }));
+                setSurahs(mappedSurahs);
+
+                // Map API juzs to JuzInfo interface
+                const mappedJuzs: JuzInfo[] = juzsData.map(j => ({
+                    number: j.juz_number,
+                    startSurah: `Page ${j.first_verse_id}`, // Simplified for now
+                    endSurah: `Verses: ${j.verses_count}`,
+                    pages: j.verses_count,
+                    status: 'not-started'
+                }));
+                setJuzList(mappedJuzs);
+
+                // Generate a simple pages list for browsing
+                const pagesList = Array.from({ length: 604 }, (_, i) => ({
+                    number: i + 1,
+                    surah: '',
+                    ayahStart: 0,
+                    ayahEnd: 0,
+                }));
+                setPages(pagesList); // Show all 604 pages
+
+            } catch (err) {
+                console.error('Failed to load Quran data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
 
     const tabs: { id: TabType; label: string }[] = [
         { id: 'surah', label: t('surah.surah') },
@@ -301,9 +335,14 @@ const Quran: React.FC = () => {
                             <p className="header-subtitle">{t('quran.subtitle')}, {userProfile.name}</p>
                         </div>
                     </div>
-                    <button className="settings-btn" onClick={() => setShowSettings(true)}>
-                        <Settings size={22} />
-                    </button>
+                    <div className="header-actions">
+                        <button className="download-btn" onClick={() => setShowDownloadManager(true)} title="Download for Offline">
+                            <Download size={22} />
+                        </button>
+                        <button className="settings-btn" onClick={() => setShowSettings(true)}>
+                            <Settings size={22} />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Search Bar */}
@@ -321,66 +360,75 @@ const Quran: React.FC = () => {
 
             {/* Main Content */}
             <main className="quran-content">
-                {/* Continue Reading Card */}
-                <Card className="continue-card">
-                    <span className="continue-badge">● {t('quran.continueReading')}</span>
-                    <div className="continue-content">
-                        <div className="continue-info">
-                            <h2 className="surah-name">{currentProgress.surah}</h2>
-                            <p className="surah-details">{t('surah.juz')} {currentProgress.juz} • {t('surah.ayah')} {currentProgress.ayah}</p>
-                        </div>
-                        <p className="surah-arabic">{currentProgress.arabicName}</p>
+                {loading ? (
+                    <div className="loading-state">
+                        <Loader2 className="spinner" />
+                        <p>{t('common.loading')}</p>
                     </div>
-                    <div className="progress-row">
-                        <button className="play-btn" onClick={handlePlayCurrentSurah}>
-                            <Play size={18} fill="white" />
-                        </button>
-                        <div className="progress-info">
-                            <span className="progress-current">{t('surah.ayah')} {currentProgress.ayah}</span>
-                            <div className="progress-bar-container">
-                                <div className="progress-bar" style={{ width: `${progressPercent}%` }} />
+                ) : (
+                    <>
+                        {/* Continue Reading Card */}
+                        <Card className="continue-card">
+                            <span className="continue-badge">● {t('quran.continueReading')}</span>
+                            <div className="continue-content">
+                                <div className="continue-info">
+                                    <h2 className="surah-name">{currentProgress.surah}</h2>
+                                    <p className="surah-details">{t('surah.juz')} {currentProgress.juz} • {t('surah.ayah')} {currentProgress.ayah}</p>
+                                </div>
+                                <p className="surah-arabic">{currentProgress.arabicName}</p>
                             </div>
-                        </div>
-                        <button className="view-all-btn" onClick={handleViewAllCurrentSurah}>
-                            {t('dashboard.viewAll')}
-                        </button>
-                    </div>
-                </Card>
-
-                {/* Muraja'a Cards */}
-                <div className="muraja-row">
-                    {muraja.map((item) => (
-                        <Card
-                            key={item.id}
-                            className={`muraja-status-card ${item.status === 'due' ? 'due' : 'on-track'}`}
-                        >
-                            <div className="muraja-card-header">
-                                <span className="muraja-icon">{item.status === 'due' ? '🔄' : '✓'}</span>
-                                <span className={`muraja-badge ${item.status}`}>
-                                    {item.status === 'due' ? t('quran.due') : t('quran.onTrack')}
-                                </span>
+                            <div className="progress-row">
+                                <button className="play-btn" onClick={handlePlayCurrentSurah}>
+                                    <Play size={18} fill="white" />
+                                </button>
+                                <div className="progress-info">
+                                    <span className="progress-current">{t('surah.ayah')} {currentProgress.ayah}</span>
+                                    <div className="progress-bar-container">
+                                        <div className="progress-bar" style={{ width: `${progressPercent}%` }} />
+                                    </div>
+                                </div>
+                                <button className="view-all-btn" onClick={handleViewAllCurrentSurah}>
+                                    {t('dashboard.viewAll')}
+                                </button>
                             </div>
-                            <p className="muraja-label">{t('quran.murajaToday')}</p>
-                            <p className="muraja-juz">{t('surah.juz')} {item.juz} ({item.pages} pgs)</p>
                         </Card>
-                    ))}
-                </div>
 
-                {/* Tabs */}
-                <div className="surah-tabs">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            className={`surah-tab ${activeTab === tab.id ? 'active' : ''}`}
-                            onClick={() => setActiveTab(tab.id)}
-                        >
-                            {tab.label}
-                        </button>
-                    ))}
-                </div>
+                        {/* Muraja'a Cards */}
+                        <div className="muraja-row">
+                            {muraja.map((item) => (
+                                <Card
+                                    key={item.id}
+                                    className={`muraja-status-card ${item.status === 'due' ? 'due' : 'on-track'}`}
+                                >
+                                    <div className="muraja-card-header">
+                                        <span className="muraja-icon">{item.status === 'due' ? '🔄' : '✓'}</span>
+                                        <span className={`muraja-badge ${item.status}`}>
+                                            {item.status === 'due' ? t('quran.due') : t('quran.onTrack')}
+                                        </span>
+                                    </div>
+                                    <p className="muraja-label">{t('quran.murajaToday')}</p>
+                                    <p className="muraja-juz">{t('surah.juz')} {item.juz} ({item.pages} pgs)</p>
+                                </Card>
+                            ))}
+                        </div>
 
-                {/* Tab Content */}
-                {renderTabContent()}
+                        {/* Tabs */}
+                        <div className="surah-tabs">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    className={`surah-tab ${activeTab === tab.id ? 'active' : ''}`}
+                                    onClick={() => setActiveTab(tab.id)}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Tab Content */}
+                        {renderTabContent()}
+                    </>
+                )}
             </main>
 
             <BottomNavbar />
@@ -389,6 +437,12 @@ const Quran: React.FC = () => {
             <QuranSettingsModal
                 isOpen={showSettings}
                 onClose={() => setShowSettings(false)}
+            />
+
+            {/* Download Manager Modal */}
+            <DownloadManager
+                isOpen={showDownloadManager}
+                onClose={() => setShowDownloadManager(false)}
             />
         </div>
     );
