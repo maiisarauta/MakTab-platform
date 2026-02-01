@@ -232,7 +232,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
 };
 
 export const DEFAULT_QURAN_SETTINGS: QuranSettings = {
-    fontSize: 28,
+    fontSize: 18,
     reciter: 'mishary-rashid',
     showTranslation: false,
     translationLanguage: 'en',

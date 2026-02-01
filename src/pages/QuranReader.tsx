@@ -65,7 +65,7 @@ const QuranReader: React.FC = () => {
         return {
             ...DEFAULT_QURAN_SETTINGS,
             translationLanguage: appLang as 'en' | 'ha',
-            fontSize: 28
+            fontSize: 18
         };
     });
     const [audioEnabled, setAudioEnabled] = useState(() => {

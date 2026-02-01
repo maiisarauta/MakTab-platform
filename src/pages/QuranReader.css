@@ -54,11 +54,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-4) var(--space-5);
+    padding: 12px 16px;
     background: var(--gradient-header);
     color: white;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
 }
 
@@ -442,12 +444,18 @@
 
 .bismillah-text {
     font-family: var(--font-arabic);
-    font-size: 32px;
-    color: var(--color-gray-800);
-    margin-top: var(--space-6);
+    font-size: 28px;
+    color: #1a3d2b;
+    margin-top: var(--space-4);
     margin-bottom: var(--space-6);
     text-align: center;
     font-weight: normal;
+    padding: var(--space-2) var(--space-4);
+    width: 100%;
+}
+
+[data-theme="dark"] .bismillah-text {
+    color: #a8d5ba;
 }
 
 /* Surah Header in Card Mode */
@@ -567,15 +575,15 @@
     border-color: #334155;
 }
 
-/* Traditional Quran Layout - Like reading from a real Mushaf */
+/* Traditional Quran Layout - Mobile First Design */
 .reader-content.traditional-mode {
-    background: #FFFEF5;
-    /* Light Mode Parchment */
+    background: linear-gradient(180deg, #e8f5e3 0%, #dff0d8 50%, #e8f5e3 100%);
+    /* Traditional Quran paper - Light green parchment */
 }
 
 [data-theme="dark"] .reader-content.traditional-mode {
-    background: #0f172a;
-    /* Dark Mode Night */
+    background: linear-gradient(180deg, #1a2f23 0%, #0f1f15 50%, #1a2f23 100%);
+    /* Dark Mode with subtle green tint */
 }
 
 .reader-content.no-audio {
@@ -584,69 +592,88 @@
 }
 
 .traditional-quran-text {
-    font-family: var(--font-arabic);
-    text-align: center;
-    direction: rtl;
-    line-height: 2.2;
-    color: var(--color-gray-900);
-    background: var(--color-white);
-    padding: var(--space-10) var(--space-6);
-    border-radius: var(--radius-xl);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    word-spacing: 4px;
-    letter-spacing: 0;
-    /* Resetting: Arabic letters must stay connected */
-    border: 1px solid var(--color-gray-100);
+    display: block;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    min-height: 80vh;
+    max-width: 480px;
+    /* Mobile-first: Always show mobile size */
+    top: 90px;
+    bottom: 70px;
+    font-family: var(--font-arabic);
+    text-align: justify;
+    text-align-last: center;
+    direction: rtl;
+    line-height: 2.4;
+    color: #1a3d2b;
+    background: linear-gradient(180deg, #e8f5e3 0%, #dff0d8 50%, #e8f5e3 100%);
+    border-radius: 0;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.02);
+    word-spacing: 6px;
+    letter-spacing: 0;
+    padding: 16px 20px;
+    border: none;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 [data-theme="dark"] .traditional-quran-text {
-    background: #1e293b;
-    color: #f1f5f9;
-    border-color: #334155;
+    background: linear-gradient(180deg, #1a2f23 0%, #0f1f15 50%, #1a2f23 100%);
+    color: #c8e6c9;
+    box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.2);
 }
 
 .quran-line {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 1px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-left: 30px;
+    /* overflow-x: hidden; */
+    /* Words flow inline naturally */
 }
 
 .ayah-marker {
-    color: #2ca4ab;
-    font-size: 1em;
+    color: #c9961a;
+    font-size: 0.85em;
     padding: 0 2px;
-    vertical-align: baseline;
+    vertical-align: middle;
+    font-weight: 500;
 }
 
 .verse-end-marker {
     font-family: var(--font-arabic);
-    color: #2ca4ab;
-    font-size: 0.9em;
-    padding: 0 4px;
-    vertical-align: baseline;
+    color: #c9961a;
+    font-size: 0.75em;
+    padding: 0 6px;
+    vertical-align: middle;
+    background: transparent;
+    font-weight: 600;
 }
 
 .quran-word {
     display: inline;
-    padding: 0;
-    margin: 0 1px;
+    margin: 0 2px;
     cursor: pointer;
     transition: color 0.15s ease;
-    color: var(--color-gray-600);
-    /* Blue color from the reference image for verses */
+    color: #1a3d2b;
+    /* Dark green for main text like traditional Quran */
+}
+
+[data-theme="dark"] .quran-word {
+    color: #a8d5ba;
 }
 
 .quran-word:hover {
-    color: #2ca4ab;
+    color: #2d8659;
 }
 
 .quran-word.playing {
-    color: #2ca4ab;
+    color: #1976d2;
+    font-weight: 600;
 }
 
 .tajweed-teal,
@@ -654,7 +681,20 @@
     color: #2ca4ab;
 }
 
-/* Bottom Control Bar - Combined Audio + Navigation */
+/* Tajweed color classes for highlighted words */
+.tajweed-red {
+    color: #e53935;
+}
+
+.tajweed-blue {
+    color: #1976d2;
+}
+
+.tajweed-green {
+    color: #2e7d32;
+}
+
+/* Bottom Control Bar */
 .bottom-control-bar {
     position: fixed;
     bottom: 0;
@@ -662,14 +702,13 @@
     right: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: var(--space-3) var(--space-4);
+    justify-content: center;
+    padding: 10px 16px;
     background: linear-gradient(to top, var(--color-white), rgba(255, 255, 255, 0.98));
     border-top: 1px solid var(--color-gray-200);
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
     z-index: 100;
-    gap: var(--space-3);
-    flex-wrap: wrap;
+    gap: 12px;
 }
 
 [data-theme="dark"] .bottom-control-bar {
@@ -847,5 +886,42 @@
 
     .player-ayah-info span {
         display: none;
+    }
+
+    /* Traditional Quran Text - Mobile */
+    .traditional-quran-text {
+        top: 90px;
+        bottom: 70px;
+        padding: var(--space-3) var(--space-4);
+        line-height: 2.4;
+        word-spacing: 6px;
+    }
+
+    .quran-word {
+        margin: 0 1px;
+    }
+
+    .verse-end-marker {
+        font-size: 0.7em;
+        padding: 0 4px;
+    }
+
+    .bismillah-text {
+        font-size: 22px;
+        padding: var(--space-2);
+        margin-top: var(--space-3);
+        margin-bottom: var(--space-4);
+    }
+
+    .surah-separator {
+        margin: var(--space-6) auto var(--space-4);
+    }
+
+    .surah-frame {
+        max-width: 280px;
+    }
+
+    .surah-name-wrapper {
+        font-size: 18px;
     }
 }

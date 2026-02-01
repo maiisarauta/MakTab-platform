@@ -13,6 +13,7 @@ import Timetable from './pages/Timetable';
 import Qibla from './pages/Qibla';
 import Notifications from './pages/Notifications';
 import InstallPrompt from './components/common/InstallPrompt/InstallPrompt';
+import AccessGuard from './components/AccessGuard/AccessGuard';
 import {
     TeacherDashboard,
     TeacherClasses,
@@ -32,7 +33,7 @@ import {
 
 const App: React.FC = () => {
     return (
-        <>
+        <AccessGuard>
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Onboarding />} />
@@ -73,8 +74,9 @@ const App: React.FC = () => {
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             <InstallPrompt />
-        </>
+        </AccessGuard>
     );
 };
 
 export default App;
+
