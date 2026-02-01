@@ -449,7 +449,7 @@
     margin-top: var(--space-4);
     margin-bottom: var(--space-6);
     text-align: center;
-    font-weight: normal;
+    font-weight: bolder;
     padding: var(--space-2) var(--space-4);
     width: 100%;
 }
