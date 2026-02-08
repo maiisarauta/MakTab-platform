@@ -73,9 +73,10 @@ const App: React.FC = () => {
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
             <InstallPrompt />
-        </Routes>
 
-        // </AccessGuard >
+        </Routes >
+
+        //</AccessGuard >
     );
 };
 
