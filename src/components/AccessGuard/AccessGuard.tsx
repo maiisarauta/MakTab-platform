@@ -9,7 +9,7 @@ const ACCESS_KEY = 'maktab_access_granted';
 const ACCESS_DURATION_DAYS = 1;
 
 const AccessGuard: React.FC<AccessGuardProps> = ({ children }) => {
-    const [isVerified, setIsVerified] = useState<boolean | null>(null);
+    const [isVerified, setIsVerified] = useState<boolean | null>(true);
     const [code, setCode] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
